@@ -1,0 +1,194 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f7f7f8;
+  --foreground: #1a1a1a;
+  --primary: #2563eb;
+  --primary-dark: #1d4ed8;
+  --primary-light: #3b82f6;
+  --secondary: #ffffff;
+  --accent: #2563eb;
+  --gray-light: #f3f4f6;
+  --gray: #e5e7eb;
+  --gray-dark: #6b7280;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --error: #ef4444;
+  --primary-gradient: linear-gradient(to right, #4f46e5, #3b82f6);
+  --primary-gradient-hover: linear-gradient(to right, #4338ca, #2563eb);
+  --background-gradient: linear-gradient(to bottom right, #f8fafc, #f1f5f9);
+  --card-background: rgba(255, 255, 255, 0.9);
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+  --border-color: #e2e8f0;
+  --error-bg: #fef2f2;
+  --error-text: #dc2626;
+  --error-border: #fee2e2;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-dark: var(--primary-dark);
+  --color-primary-light: var(--primary-light);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #1a1a1a;
+    --foreground: #f3f4f6;
+    --primary: #3b82f6;
+    --primary-dark: #2563eb;
+    --primary-light: #60a5fa;
+    --secondary: #262626;
+    --accent: #3b82f6;
+    --gray-light: #2a2a2a;
+    --gray: #333333;
+    --gray-dark: #9ca3af;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+  line-height: 1.5;
+  @apply bg-gray-50;
+  background-image: var(--background-gradient);
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  color: white;
+  border-radius: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border: none;
+  cursor: pointer;
+  @apply bg-gradient-to-r from-indigo-500 to-blue-500 text-white py-2 px-4 rounded-lg 
+         hover:from-indigo-600 hover:to-blue-600 transition-all focus:outline-none 
+         focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 shadow-md hover:shadow-lg;
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-dark);
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background-color: var(--secondary);
+  color: var(--foreground);
+  border-radius: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border: 1px solid var(--gray);
+  cursor: pointer;
+  @apply bg-gray-100 text-gray-700 hover:bg-gray-200 transition-all;
+}
+
+.btn-secondary:hover {
+  background-color: var(--gray-light);
+  transform: translateY(-1px);
+}
+
+.card {
+  background-color: var(--secondary);
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: all 0.2s ease;
+  border: 1px solid var(--gray);
+  @apply bg-white rounded-2xl shadow-xl p-8 backdrop-blur-sm opacity-90 border border-gray-100;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.section {
+  padding: 4rem 0;
+}
+
+.heading {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: var(--foreground);
+}
+
+.subheading {
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: var(--gray-dark);
+  margin-bottom: 1rem;
+}
+
+.text-primary {
+  color: var(--primary);
+}
+
+.text-secondary {
+  color: var(--gray-dark);
+}
+
+.input {
+  background-color: var(--secondary);
+  border: 1px solid var(--gray);
+  border-radius: 0.5rem;
+  padding: 0.625rem 1rem;
+  width: 100%;
+  transition: all 0.2s ease;
+  @apply w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 
+         focus:ring-indigo-500 focus:border-indigo-500 transition-colors shadow-sm;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+}
+
+.hero-section {
+  background-color: var(--primary);
+  background-image: linear-gradient(to right, #1a73e8, #4285f4);
+  color: white;
+}
+
+.chat-bubble {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: var(--primary);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: transform 0.2s;
+  z-index: 1000;
+}
+
+.chat-bubble:hover {
+  transform: scale(1.05);
+}
+@layer components {
+  .error-message {
+    @apply p-3 bg-red-50 text-red-600 rounded-lg text-sm border border-red-100;
+  }
+}
+
