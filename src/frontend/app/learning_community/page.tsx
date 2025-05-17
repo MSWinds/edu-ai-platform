@@ -4,6 +4,7 @@ import { useState } from 'react';
 import DashboardSidebar from '../main_sidebar/DashboardSidebar';
 import { colors } from '../theme/colors';
 import { mockCourseData } from '../mockdata/courseData';
+import { useRouter } from 'next/navigation';
 
 interface Discussion {
   id: string;
@@ -80,6 +81,7 @@ const mockReplies: Record<string, Reply[]> = {
 };
 
 export default function LearningCommunity() {
+  const router = useRouter();
   const [selectedCourse, setSelectedCourse] = useState<string>('all');
   const [discussions, setDiscussions] = useState<Discussion[]>(mockDiscussions);
   const [showNewDiscussion, setShowNewDiscussion] = useState(false);
@@ -213,7 +215,7 @@ export default function LearningCommunity() {
                   key={discussion.id}
                   className="bg-white rounded-2xl shadow-md border p-6 hover:shadow-lg transition-shadow cursor-pointer"
                   style={{borderColor: colors.border}}
-                  onClick={() => window.location.href = `/learning_community/discussion/${discussion.id}`}
+                  onClick={() => router.push(`/learning_community/discussion/${discussion.id}`)}
                 >
                   <div className="flex items-start gap-6">
                     {/* 左侧统计信息 */}

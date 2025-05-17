@@ -20,7 +20,14 @@ export default function DashboardSidebar({ userRole, userName, userEmail, onColl
   const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
   const pathname = usePathname();
-  const activeItem = pathname;
+  
+  // 修改 active 状态判断逻辑
+  const isActive = (href: string) => {
+    if (href === '/') {
+      return pathname === '/';
+    }
+    return pathname.startsWith(href);
+  };
   
   useEffect(() => {
     const currentUser = getUser();
@@ -298,7 +305,7 @@ export default function DashboardSidebar({ userRole, userName, userEmail, onColl
           <nav className="flex-1 overflow-y-auto py-6 px-3">
             <ul className="space-y-1">
               {menuItems.map((item, index) => {
-                const isActive = activeItem === item.href;
+                const isItemActive = isActive(item.href);
                 return (
                   <li key={index}>
                     <Link 
@@ -306,24 +313,24 @@ export default function DashboardSidebar({ userRole, userName, userEmail, onColl
                       className={`flex items-center ${collapsed ? 'justify-center' : ''} px-3 py-2.5 
                         rounded-xl transition-all duration-200`}
                       style={{ 
-                        background: isActive ? colors.gradient.primary : 'transparent',
-                        color: isActive ? '#ffffff' : colors.text.secondary,
-                        boxShadow: isActive ? '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)' : 'none'
+                        background: isItemActive ? colors.gradient.primary : 'transparent',
+                        color: isItemActive ? '#ffffff' : colors.text.secondary,
+                        boxShadow: isItemActive ? '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)' : 'none'
                       }}
                       onMouseEnter={(e) => {
-                        if (!isActive) {
+                        if (!isItemActive) {
                           e.currentTarget.style.backgroundColor = colors.cardBg;
                           e.currentTarget.style.color = colors.primary;
                         }
                       }}
                       onMouseLeave={(e) => {
-                        if (!isActive) {
+                        if (!isItemActive) {
                           e.currentTarget.style.backgroundColor = 'transparent';
                           e.currentTarget.style.color = colors.text.secondary;
                         }
                       }}
                     >
-                      <div style={{ color: isActive ? '#ffffff' : 'inherit' }}>
+                      <div style={{ color: isItemActive ? '#ffffff' : 'inherit' }}>
                         {item.icon}
                       </div>
                       {!collapsed && <span className="ml-3 text-sm font-medium">{item.label}</span>}
@@ -343,24 +350,24 @@ export default function DashboardSidebar({ userRole, userName, userEmail, onColl
                   className={`flex items-center ${collapsed ? 'justify-center' : ''} px-3 py-2.5 
                     rounded-xl transition-all duration-200`}
                   style={{ 
-                    background: activeItem === '/setting' ? colors.gradient.primary : 'transparent',
-                    color: activeItem === '/setting' ? '#ffffff' : colors.text.secondary,
-                    boxShadow: activeItem === '/setting' ? '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)' : 'none'
+                    background: isActive('/setting') ? colors.gradient.primary : 'transparent',
+                    color: isActive('/setting') ? '#ffffff' : colors.text.secondary,
+                    boxShadow: isActive('/setting') ? '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)' : 'none'
                   }}
                   onMouseEnter={(e) => {
-                    if (activeItem !== '/setting') {
+                    if (!isActive('/setting')) {
                       e.currentTarget.style.backgroundColor = colors.cardBg;
                       e.currentTarget.style.color = colors.primary;
                     }
                   }}
                   onMouseLeave={(e) => {
-                    if (activeItem !== '/setting') {
+                    if (!isActive('/setting')) {
                       e.currentTarget.style.backgroundColor = 'transparent';
                       e.currentTarget.style.color = colors.text.secondary;
                     }
                   }}
                 >
-                  <div style={{ color: activeItem === '/setting' ? '#ffffff' : 'inherit' }}>
+                  <div style={{ color: isActive('/setting') ? '#ffffff' : 'inherit' }}>
                     <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -375,18 +382,18 @@ export default function DashboardSidebar({ userRole, userName, userEmail, onColl
                   className={`flex items-center ${collapsed ? 'justify-center' : ''} px-3 py-2.5 
                     w-full rounded-xl transition-all duration-200 cursor-pointer`}
                   style={{ 
-                    background: activeItem === '/logout' ? colors.gradient.primary : 'transparent',
-                    color: activeItem === '/logout' ? '#ffffff' : colors.text.secondary,
-                    boxShadow: activeItem === '/logout' ? '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)' : 'none'
+                    background: isActive('/logout') ? colors.gradient.primary : 'transparent',
+                    color: isActive('/logout') ? '#ffffff' : colors.text.secondary,
+                    boxShadow: isActive('/logout') ? '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)' : 'none'
                   }}
                   onMouseEnter={(e) => {
-                    if (activeItem !== '/logout') {
+                    if (!isActive('/logout')) {
                       e.currentTarget.style.backgroundColor = colors.cardBg;
                       e.currentTarget.style.color = colors.primary;
                     }
                   }}
                   onMouseLeave={(e) => {
-                    if (activeItem !== '/logout') {
+                    if (!isActive('/logout')) {
                       e.currentTarget.style.backgroundColor = 'transparent';
                       e.currentTarget.style.color = colors.text.secondary;
                     }
