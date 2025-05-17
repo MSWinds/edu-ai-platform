@@ -5,6 +5,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { logout, getUser, User } from '../login/auth';
 import { colors } from '../theme/colors';
+import { JSX } from 'react';
 
 interface DashboardSidebarProps {
   userRole?: string;

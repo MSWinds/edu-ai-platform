@@ -378,32 +378,37 @@ export default function AIAssistant() {
             <div className="mb-6 flex-shrink-0">
               <h2 className="text-lg font-semibold" style={{ color: colors.text.primary }}>历史对话</h2>
             </div>
-            <div className="space-y-3 overflow-y-auto flex-1">
-              {conversations.map((conv) => (
-                <button
-                  key={conv.id}
-                  onClick={() => setActiveConversationId(conv.id)}
-                  className={`w-full p-4 text-left rounded-xl transition-all duration-200 ${
-                    activeConversationId === conv.id ? 'shadow-lg' : 'hover:bg-gray-50'
-                  }`}
-                  style={{
-                    color: activeConversationId === conv.id ? colors.primary : colors.text.primary,
-                    backgroundColor: activeConversationId === conv.id ? 'rgba(99, 102, 241, 0.1)' : 'transparent',
-                  }}
-                >
-                  <div className="flex items-center space-x-3 mb-2">
-                    <div className={`p-2 rounded-lg ${activeConversationId === conv.id ? 'bg-indigo-100' : 'bg-gray-100'}`}>
-                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
-                      </svg>
+            <div className="space-y-4 overflow-y-auto flex-1">
+              {conversations.map((conv, index) => (
+                <div key={conv.id} className="relative">
+                  {index > 0 && (
+                    <div className="absolute -top-2 left-0 right-0 h-px bg-gray-200" />
+                  )}
+                  <button
+                    onClick={() => setActiveConversationId(conv.id)}
+                    className={`w-full p-4 text-left rounded-xl transition-all duration-200 border ${
+                      activeConversationId === conv.id ? 'shadow-lg' : 'hover:bg-gray-50'
+                    }`}
+                    style={{
+                      color: activeConversationId === conv.id ? colors.primary : colors.text.primary,
+                      backgroundColor: activeConversationId === conv.id ? 'rgba(99, 102, 241, 0.1)' : 'transparent',
+                      borderColor: activeConversationId === conv.id ? colors.primary : colors.border,
+                    }}
+                  >
+                    <div className="flex items-center space-x-3 mb-2">
+                      <div className={`p-2 rounded-lg ${activeConversationId === conv.id ? 'bg-indigo-100' : 'bg-gray-100'}`}>
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                        </svg>
+                      </div>
+                      <span className="font-medium truncate">{conv.title}</span>
                     </div>
-                    <span className="font-medium truncate">{conv.title}</span>
-                  </div>
-                  <div className="flex items-center justify-between text-xs" style={{ color: colors.text.secondary }}>
-                    <span>{conv.type === 'lecture' ? '课程内容' : conv.type === 'assignment' ? '作业相关' : conv.type === 'quiz' ? '堂测相关' : '通用问题'}</span>
-                    <span>{conv.lastUpdated.toLocaleString()}</span>
-                  </div>
-                </button>
+                    <div className="flex items-center justify-between text-xs" style={{ color: colors.text.secondary }}>
+                      <span>{conv.type === 'lecture' ? '课程内容' : conv.type === 'assignment' ? '作业相关' : conv.type === 'quiz' ? '堂测相关' : '通用问题'}</span>
+                      <span>{conv.lastUpdated.toLocaleString()}</span>
+                    </div>
+                  </button>
+                </div>
               ))}
             </div>
           </div>
