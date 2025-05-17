@@ -209,18 +209,18 @@ export default function AIAssistant() {
   return (
     <DashboardSidebar>
       <div className="h-screen flex flex-col bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden">
-        <header className="py-6 border-b backdrop-blur-sm bg-white/80 flex-shrink-0" style={{ borderColor: colors.border }}>
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center space-x-4">
-              <div className="h-12 w-12 rounded-2xl flex items-center justify-center shadow-lg"
+        <header className="py-4 border-b backdrop-blur-sm bg-white/80 flex-shrink-0" style={{ borderColor: colors.border }}>
+          <div className="px-4">
+            <div className="flex items-center space-x-3">
+              <div className="h-10 w-10 rounded-xl flex items-center justify-center shadow-lg flex-shrink-0"
                 style={{ background: colors.gradient.primary }}>
-                <svg className="h-7 w-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
                 </svg>
               </div>
-              <div>
-                <h1 className="text-3xl font-bold" style={{ color: colors.text.primary }}>AI 助教</h1>
-                <p className="text-sm mt-1" style={{ color: colors.text.secondary }}>智能学习助手，随时为您解答问题</p>
+              <div className="flex-1 min-w-0">
+                <h1 className="text-xl font-bold truncate" style={{ color: colors.text.primary }}>AI 助教</h1>
+                <p className="text-xs mt-0.5 truncate" style={{ color: colors.text.secondary }}>智能学习助手，随时为您解答问题</p>
               </div>
             </div>
           </div>
@@ -228,7 +228,7 @@ export default function AIAssistant() {
 
         <div className="flex-1 flex overflow-hidden">
           {/* 左侧选择面板 */}
-          <div className="w-72 border-r p-6 backdrop-blur-sm bg-white/80 flex-shrink-0" style={{ borderColor: colors.border }}>
+          <div className="w-72 border-r p-4 backdrop-blur-sm bg-white/80 flex-shrink-0" style={{ borderColor: colors.border }}>
             <button
               onClick={createNewConversation}
               className="w-full mb-8 p-3 rounded-xl text-white font-medium shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-0.5 flex items-center justify-center space-x-2"
