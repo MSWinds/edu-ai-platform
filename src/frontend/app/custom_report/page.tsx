@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import DashboardSidebar from '../DashboardSidebar';
-import { colors } from '../../theme/colors';
+import DashboardSidebar from '../main_sidebar/DashboardSidebar';
+import { colors } from '../theme/colors';
 
 const CustomReportPage = () => {
   const [selectedWeek, setSelectedWeek] = useState(1);
