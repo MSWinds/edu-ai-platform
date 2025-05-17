@@ -111,9 +111,9 @@ export default function LoginPage() {
     
     // 基于用户角色进行页面重定向
     if (role === 'teacher') {
-      router.push('/frontend/teacher'); // 教师重定向到教师仪表盘
+      router.push('/teacher'); // 教师重定向到教师仪表盘
     } else {
-      router.push('/frontend/student'); // 学生重定向到学生仪表盘
+      router.push('/student'); // 学生重定向到学生仪表盘
     }
   };
 
@@ -285,7 +285,7 @@ export default function LoginPage() {
               </label>
             </div>
 
-            <Link href="/frontend/forgot-password" className="text-sm bg-gradient-to-r from-indigo-500 to-blue-500 bg-clip-text text-transparent hover:from-indigo-600 hover:to-blue-600 underline">
+            <Link href="/forgot-password" className="text-sm bg-gradient-to-r from-indigo-500 to-blue-500 bg-clip-text text-transparent hover:from-indigo-600 hover:to-blue-600 underline">
               忘记密码?
             </Link>
           </div>
@@ -319,7 +319,7 @@ export default function LoginPage() {
           <div className="text-center">
             <p className="text-sm text-gray-600">
               还没有账号？{' '}
-              <Link href="/frontend/register" className="text-sm bg-gradient-to-r from-indigo-500 to-blue-500 bg-clip-text text-transparent hover:from-indigo-600 hover:to-blue-600 underline">
+              <Link href="/register" className="text-sm bg-gradient-to-r from-indigo-500 to-blue-500 bg-clip-text text-transparent hover:from-indigo-600 hover:to-blue-600 underline">
                 立即注册
               </Link>
             </p>

@@ -28,7 +28,7 @@ export default function RegisterPage() {
     }
 
     // 这里添加实际的注册逻辑
-    router.push('/frontend/login');
+    router.push('/login');
   };
 
   return (
@@ -134,7 +134,7 @@ export default function RegisterPage() {
         <div className="text-center mt-6">
           <span className="text-gray-600">已有账号？</span>
           <Link
-            href="/frontend/login"
+            href="/login"
             className="ml-2 text-indigo-600 hover:text-indigo-500"
           >
             立即登录

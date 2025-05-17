@@ -108,13 +108,13 @@ export function redirectIfNotAuthenticated(router: AppRouterInstance): boolean {
     const user = getUser();
     if (!user) {
       console.log('未登录，重定向到登录页');
-      router.push('/frontend/login');
+      router.push('/login');
       return true; // 表示重定向已发生
     }
     return false; // 表示用户已登录，无需重定向
   } catch (error) {
     console.error('检查认证状态时出错:', error);
-    router.push('/frontend/login');
+    router.push('/login');
     return true; // 发生错误时也重定向到登录页
   }
 }

@@ -56,7 +56,7 @@ export default function ForgotPasswordPage() {
               密码重置链接已发送到您的邮箱，请查收
             </div>
             <Link
-              href="/frontend/login"
+              href="/login"
               className="text-indigo-600 hover:text-indigo-500"
             >
               返回登录
@@ -91,7 +91,7 @@ export default function ForgotPasswordPage() {
 
             <div className="text-center">
               <Link
-                href="/frontend/login"
+                href="/login"
                 className="text-sm text-indigo-600 hover:text-indigo-500"
               >
                 返回登录

@@ -3,5 +3,5 @@
 import { redirect } from 'next/navigation';
 
 export default function Home() {
-  redirect('/frontend/login');
+  redirect('/login');
 };
