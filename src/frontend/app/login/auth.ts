@@ -64,6 +64,9 @@ export function isAuthenticated(): boolean {
  */
 export function getUser(): User | null {
   try {
+    if (typeof window === 'undefined') {
+      return null;
+    }
     const userData = sessionStorage.getItem('user');
     return userData ? JSON.parse(userData) : null;
   } catch (error) {

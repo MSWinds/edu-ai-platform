@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import DashboardSidebar from '../DashboardSidebar';
+import { colors } from '../../theme/colors';
 
 const CustomReportPage = () => {
   const [selectedWeek, setSelectedWeek] = useState(1);
@@ -70,27 +71,30 @@ const CustomReportPage = () => {
   return (
     <DashboardSidebar>
       <div className="flex-1">
-        <div className="max-w-6xl mx-auto p-8">
-          {/* 页面标题和导航 */}
-          <div className="flex justify-between items-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-800">AI学习周报</h1>
-            <div className="flex space-x-2">
-              {[1, 2, 3, 4].map((week) => (
-                <button
-                  key={week}
-                  onClick={() => setSelectedWeek(week)}
-                  className={`px-4 py-2 rounded-lg transition-colors ${
-                    selectedWeek === week
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-white text-gray-600 hover:bg-gray-100'
-                  }`}
-                >
-                  第{week}周
-                </button>
-              ))}
+        <header className="bg-white shadow" style={{ borderBottom: `1px solid ${colors.border}` }}>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div className="flex justify-between items-center">
+              <h1 className="text-2xl font-bold" style={{ color: colors.text.primary }}>AI学习周报</h1>
+              <div className="flex space-x-2">
+                {[1, 2, 3, 4].map((week) => (
+                  <button
+                    key={week}
+                    onClick={() => setSelectedWeek(week)}
+                    className={`px-4 py-2 rounded-lg transition-colors ${
+                      selectedWeek === week
+                        ? 'bg-blue-600 text-white'
+                        : 'bg-white text-gray-600 hover:bg-gray-100'
+                    }`}
+                  >
+                    第{week}周
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
-
+        </header>
+        
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* 主要内容区域 */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* 左侧：课程进度和学习路径 */}
@@ -242,7 +246,7 @@ const CustomReportPage = () => {
               </div>
             </div>
           </div>
-        </div>
+        </main>
       </div>
     </DashboardSidebar>
   );

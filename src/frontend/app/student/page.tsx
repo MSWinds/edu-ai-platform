@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import ChatAssistant from '../ai_ta/ChatAssistant';
 import DashboardSidebar from '../main_sidebar/DashboardSidebar';
 import { redirectIfNotAuthenticated, getUser } from '../login/auth';
 import { colors } from '../theme/colors';
@@ -341,7 +340,6 @@ export default function Dashboard() {
             </div>
           )}
         </main>
-        <ChatAssistant />
       </div>
     </DashboardSidebar>
   );
