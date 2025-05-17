@@ -1,15 +1,22 @@
-import { useState, useCallback } from 'react';
+import { create } from 'zustand';
 import type { ChatMessage, CourseReference } from '../types/chat';
 import { getMockResponse } from '../mock/responses';
 
-export function useChat() {
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+interface ChatState {
+  messages: ChatMessage[];
+  isLoading: boolean;
+  sendMessage: (content: string, courseRefs?: CourseReference[]) => Promise<void>;
+  clearMessages: () => void;
+}
 
-  const sendMessage = useCallback(async (content: string, courseRefs?: CourseReference[]) => {
-    setIsLoading(true);
+export const useChatStore = create<ChatState>()((set) => ({
+  messages: [],
+  isLoading: false,
+
+  sendMessage: async (content: string, courseRefs?: CourseReference[]) => {
+    set({ isLoading: true });
     try {
-      // 模拟API调用延迟
+      // 模拟API调用
       await new Promise(resolve => setTimeout(resolve, 1000));
       
       // 用户消息
@@ -33,20 +40,13 @@ export function useChat() {
         courseReferences: mockResponse.courseRefs
       };
       
-      setMessages(prev => [...prev, userMessage, aiMessage]);
+      set((state) => ({
+        messages: [...state.messages, userMessage, aiMessage]
+      }));
     } finally {
-      setIsLoading(false);
+      set({ isLoading: false });
     }
-  }, []);
+  },
 
-  const clearMessages = useCallback(() => {
-    setMessages([]);
-  }, []);
-
-  return {
-    messages,
-    sendMessage,
-    isLoading,
-    clearMessages
-  };
-} 
+  clearMessages: () => set({ messages: [] })
+})); 

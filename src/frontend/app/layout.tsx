@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
+import { AIAssistantProvider } from "./components/ai_assistant/AIAssistantProvider";
 import "./globals.css";
 
 const geistSans = GeistSans;
@@ -20,6 +21,7 @@ export default function RootLayout({
     <html lang="zh" className={`${geistSans.className} ${geistMono.className}`}>
       <body className="antialiased" suppressHydrationWarning={true}>
         {children}
+        <AIAssistantProvider />
       </body>
     </html>
   );

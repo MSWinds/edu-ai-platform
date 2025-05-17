@@ -5,9 +5,10 @@ import type { CourseReference } from '../types/chat';
 interface ChatInputProps {
   onSend: (message: string, courseRefs: CourseReference[]) => void;
   isLoading: boolean;
+  isFloating?: boolean;
 }
 
-export function ChatInput({ onSend, isLoading }: ChatInputProps) {
+export function ChatInput({ onSend, isLoading, isFloating = false }: ChatInputProps) {
   const [message, setMessage] = useState('');
   const [showCourseSelector, setShowCourseSelector] = useState(false);
   const [selectedCourses, setSelectedCourses] = useState<CourseReference[]>([]);
@@ -15,15 +16,16 @@ export function ChatInput({ onSend, isLoading }: ChatInputProps) {
 
   const handleCourseSelect = (course: CourseReference) => {
     setSelectedCourses(prev => [...prev, course]);
-    setMessage(prev => prev + ` @${course.contentType}:${course.contentName}`);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (message.trim() && !isLoading) {
-      onSend(message, selectedCourses);
-      setMessage('');
-      setSelectedCourses([]);
+    if (message.trim() || selectedCourses.length > 0) {
+      if (!isLoading) {
+        onSend(message, selectedCourses);
+        setMessage('');
+        setSelectedCourses([]);
+      }
     }
   };
 
@@ -36,7 +38,7 @@ export function ChatInput({ onSend, isLoading }: ChatInputProps) {
             type="text"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
-            placeholder="输入你的问题... (使用@引用课程内容)"
+            placeholder="输入你的问题...(使用@引用)"
             className="w-full p-2 border rounded"
             disabled={isLoading}
           />
@@ -61,6 +63,7 @@ export function ChatInput({ onSend, isLoading }: ChatInputProps) {
         <CourseSelector
           onSelect={handleCourseSelect}
           onClose={() => setShowCourseSelector(false)}
+          position={isFloating ? 'top' : 'bottom'}
         />
       )}
 
@@ -76,9 +79,6 @@ export function ChatInput({ onSend, isLoading }: ChatInputProps) {
               <button
                 onClick={() => {
                   setSelectedCourses(prev => prev.filter((_, i) => i !== index));
-                  setMessage(prev => 
-                    prev.replace(` @${course.contentType}:${course.contentName}`, '')
-                  );
                 }}
                 className="ml-2 text-gray-500 hover:text-gray-700"
               >
