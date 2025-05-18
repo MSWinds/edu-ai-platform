@@ -111,9 +111,9 @@ export default function LoginPage() {
     
     // 基于用户角色进行页面重定向
     if (role === 'teacher') {
-      router.push('/teacher'); // 教师重定向到教师仪表盘
+      router.push('/teacher_dashboard'); // 教师重定向到教师仪表盘
     } else {
-      router.push('/student'); // 学生重定向到学生仪表盘
+      router.push('/student_dashboard'); // 学生重定向到学生仪表盘
     }
   };
 
