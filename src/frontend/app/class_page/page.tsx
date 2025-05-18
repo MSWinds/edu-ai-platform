@@ -43,7 +43,7 @@ export default function ClassPage() {
                 
                 <div className="flex justify-between">
                   <Link 
-                    href={`/courses/${mockCourseData.id}`}
+                    href={`/class_page/course_1`}
                     className="text-indigo-600 hover:text-indigo-800 font-medium"
                   >
                     进入课程
