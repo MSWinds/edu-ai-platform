@@ -36,7 +36,7 @@ interface Week {
     videoUrl: string;
     quiz: {
       question: string;
-      options: string[];
+      options: { text: string; feedback: string }[];
       answer: number;
     }[];
     completed: boolean;
@@ -191,57 +191,113 @@ export const mockUserData: UserData = {
         sections: [
           {
             title: '主题1：什么是提示工程？',
-            videoUrl: 'https://www.youtube.com/embed/4F0i6q5i5yA',
+            videoUrl: 'https://www.youtube.com/embed/Bq-ncjOGeVU',
             quiz: [
-              { question: '提示工程的核心是什么？', options: ['A. 设计输入', 'B. 选择模型', 'C. 训练数据'], answer: 0 }
+              {
+                question: '提示工程的核心是什么？',
+                options: [
+                  { text: 'A. 设计输入', feedback: '正确，设计输入是提示工程的核心。' },
+                  { text: 'B. 选择模型', feedback: '不是哦，选择模型不是提示工程的核心。' },
+                  { text: 'C. 训练数据', feedback: '不是哦，训练数据不是提示工程的核心。' }
+                ],
+                answer: 0
+              }
             ],
             completed: false
           },
           {
             title: '主题2：基础提示结构',
-            videoUrl: 'https://www.youtube.com/embed/4F0i6q5i5yA',
+            videoUrl: 'https://www.youtube.com/embed/YLykoLQ81w0 ',
             quiz: [
-              { question: '基础提示结构包括哪些部分？', options: ['A. 指令+上下文', 'B. 结果+反馈', 'C. 训练+推理'], answer: 0 }
+              {
+                question: '基础提示结构包括哪些部分？',
+                options: [
+                  { text: 'A. 指令+上下文', feedback: '正确，基础提示结构包括指令和上下文。' },
+                  { text: 'B. 结果+反馈', feedback: '不是哦，结果和反馈不是基础提示结构。' },
+                  { text: 'C. 训练+推理', feedback: '不是哦，训练和推理不是基础提示结构。' }
+                ],
+                answer: 0
+              }
             ],
             completed: false
           },
           {
             title: '主题3：少样本学习（Few-Shot Learning）',
-            videoUrl: 'https://www.youtube.com/embed/4F0i6q5i5yA',
+            videoUrl: 'https://www.youtube.com/embed/vufN-fZLMJM',
             quiz: [
-              { question: 'Few-Shot Learning的关键是什么？', options: ['A. 多样本', 'B. 少样本', 'C. 无样本'], answer: 1 }
+              {
+                question: 'Few-Shot Learning的关键是什么？',
+                options: [
+                  { text: 'A. 多样本', feedback: '不是哦，Few-Shot Learning 关键是少样本。' },
+                  { text: 'B. 少样本', feedback: '正确，Few-Shot Learning 关键是少样本。' },
+                  { text: 'C. 无样本', feedback: '不是哦，Few-Shot Learning 不是无样本。' }
+                ],
+                answer: 1
+              }
             ],
             completed: false
           },
           {
             title: '主题4：链式思考提示（Chain-of-Thought）',
-            videoUrl: 'https://www.youtube.com/embed/4F0i6q5i5yA',
+            videoUrl: 'https://www.youtube.com/embed/AFE6x81AP4k',
             quiz: [
-              { question: '链式思考提示的优势是？', options: ['A. 简单', 'B. 逻辑推理', 'C. 随机性'], answer: 1 }
+              {
+                question: '链式思考提示的优势是？',
+                options: [
+                  { text: 'A. 简单', feedback: '不是哦，链式思考提示的优势是逻辑推理。' },
+                  { text: 'B. 逻辑推理', feedback: '正确，链式思考提示的优势是逻辑推理。' },
+                  { text: 'C. 随机性', feedback: '不是哦，链式思考提示不是随机性。' }
+                ],
+                answer: 1
+              }
             ],
             completed: false
           },
           {
             title: '主题5：ReAct 提示（结合推理与行动）',
-            videoUrl: 'https://www.youtube.com/embed/4F0i6q5i5yA',
+            videoUrl: 'https://www.youtube.com/embed/1ju-tV3wbqM ',
             quiz: [
-              { question: 'ReAct 提示的特点是？', options: ['A. 只推理', 'B. 只行动', 'C. 推理与行动结合'], answer: 2 }
+              {
+                question: 'ReAct 提示的特点是？',
+                options: [
+                  { text: 'A. 只推理', feedback: '不是哦，ReAct 提示是推理与行动结合。' },
+                  { text: 'B. 只行动', feedback: '不是哦，ReAct 提示是推理与行动结合。' },
+                  { text: 'C. 推理与行动结合', feedback: '正确，ReAct 提示的特点是推理与行动结合。' }
+                ],
+                answer: 2
+              }
             ],
             completed: false
           },
           {
             title: '主题6：提示迭代（Prompt Iteration）',
-            videoUrl: 'https://www.youtube.com/embed/4F0i6q5i5yA',
+            videoUrl: 'https://www.youtube.com/embed/cWaJurbtY30',
             quiz: [
-              { question: '提示迭代的目标是？', options: ['A. 优化提示', 'B. 增加样本', 'C. 降低准确率'], answer: 0 }
+              {
+                question: '提示迭代的目标是？',
+                options: [
+                  { text: 'A. 优化提示', feedback: '正确，提示迭代的目标是优化提示。' },
+                  { text: 'B. 增加样本', feedback: '不是哦，提示迭代的目标不是增加样本。' },
+                  { text: 'C. 降低准确率', feedback: '不是哦，提示迭代的目标不是降低准确率。' }
+                ],
+                answer: 0
+              }
             ],
             completed: false
           },
           {
             title: '主题7：总结与挑战活动',
-            videoUrl: 'https://www.youtube.com/embed/4F0i6q5i5yA',
+            videoUrl: 'https://www.youtube.com/embed/A-K3S-koHAA ',
             quiz: [
-              { question: '本周你最大的收获是？', options: ['A. 技术', 'B. 思维', 'C. 沟通'], answer: 1 }
+              {
+                question: '本周你最大的收获是？',
+                options: [
+                  { text: 'A. 技术', feedback: '不错，技术是很重要的收获。' },
+                  { text: 'B. 思维', feedback: '很棒，思维提升是本周的重点！' },
+                  { text: 'C. 沟通', feedback: '沟通能力也很重要，继续加油！' }
+                ],
+                answer: 1
+              }
             ],
             completed: false
           }

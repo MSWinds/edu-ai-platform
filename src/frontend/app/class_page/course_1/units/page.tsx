@@ -1,6 +1,9 @@
+'use client';
 import DashboardSidebar from "../../../main_sidebar/DashboardSidebar";
 import { CourseMenu } from "../components/CourseMenu";
 import { mockUserData } from "../../../mockdata/courseData";
+import { useState } from "react";
+import VideoPlayerPopup from "./components/VideoPlayerPopup";
 
 // mock 学习资料
 const mockResources = [
@@ -9,6 +12,9 @@ const mockResources = [
 ];
 
 export default function UnitsPage() {
+  const [isVideoPlayerOpen, setIsVideoPlayerOpen] = useState(false);
+  const week7 = mockUserData.course.weeks[6]; // Week 7 is at index 6
+
   return (
     <div className="flex h-screen bg-gray-100">
       <DashboardSidebar />
@@ -38,7 +44,12 @@ export default function UnitsPage() {
                               <span>{video.title}</span>
                               <div className="flex items-center gap-3">
                                 <span className={`text-sm ${video.completed ? 'text-green-600' : 'text-gray-400'}`}>{video.completed ? '已完成' : '未完成'}</span>
-                                <button className="px-3 py-1 rounded bg-blue-50 text-blue-600 text-sm font-medium hover:bg-blue-100 transition">观看</button>
+                                <button 
+                                  onClick={() => week.weekNumber === 7 ? setIsVideoPlayerOpen(true) : undefined}
+                                  className="px-3 py-1 rounded bg-blue-50 text-blue-600 text-sm font-medium hover:bg-blue-100 transition"
+                                >
+                                  观看
+                                </button>
                               </div>
                             </li>
                           ))}
@@ -94,6 +105,15 @@ export default function UnitsPage() {
           </div>
         </main>
       </div>
+
+      {/* Video Player Popup */}
+      {week7.sections && (
+        <VideoPlayerPopup
+          isOpen={isVideoPlayerOpen}
+          onClose={() => setIsVideoPlayerOpen(false)}
+          sections={week7.sections}
+        />
+      )}
     </div>
   );
 } 

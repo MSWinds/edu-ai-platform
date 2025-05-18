@@ -9,7 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@heroicons/react": "^2.1.1",
+    "@headlessui/react": "^2.2.3",
+    "@heroicons/react": "^2.2.0",
     "geist": "^1.4.2",
     "next": "^15.3.2",
     "react": "^18.2.0",

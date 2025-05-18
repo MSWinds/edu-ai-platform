@@ -193,7 +193,7 @@ export default function Dashboard() {
             <div>
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-xl font-semibold" style={{ color: colors.text.primary }}>我的课程</h2>
-                <Link 
+                {/* <Link 
                   href={`/courses/${userData.course.id}`}
                   className="px-4 py-2 rounded-md shadow-sm flex items-center"
                   style={{ 
@@ -205,7 +205,7 @@ export default function Dashboard() {
                     <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
                   </svg>
                   进入课程学习
-                </Link>
+                </Link> */}
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -247,7 +247,7 @@ export default function Dashboard() {
                     
                     <div className="flex justify-between">
                       <Link 
-                        href={`/courses/${userData.course.id}`}
+                        href={`/class_page/course_1/units`}
                         className="text-indigo-600 hover:text-indigo-800 font-medium"
                       >
                         继续学习
