@@ -171,7 +171,7 @@ export default function Dashboard() {
               >
                 待办任务
               </button>
-              <button
+              {/* <button
                 onClick={() => setActiveTab('resources')}
                 className={`pb-4 px-1 ${
                   activeTab === 'resources'
@@ -184,7 +184,7 @@ export default function Dashboard() {
                 }}
               >
                 学习资源
-              </button>
+              </button> */}
             </nav>
           </div>
 

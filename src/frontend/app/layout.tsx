@@ -21,7 +21,7 @@ export default function RootLayout({
     <html lang="zh" className={`${geistSans.className} ${geistMono.className}`}>
       <body className="antialiased" suppressHydrationWarning={true}>
         {children}
-        <AIAssistantProvider />
+        {/* <AIAssistantProvider /> */}
       </body>
     </html>
   );

@@ -9,6 +9,7 @@ const menuItems = [
   { name: '成绩', path: '/class_page/course_1/grades' },
   { name: '作业', path: '/class_page/course_1/assignments' },
   { name: '成员', path: '/class_page/course_1/members' },
+  { name: '公告', path: '/class_page/course_1/announcements' },
   // 可扩展更多页面
 ];
 
