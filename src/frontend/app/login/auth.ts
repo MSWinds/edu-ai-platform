@@ -36,6 +36,7 @@ export interface User {
   email: string; // 用户电子邮箱
   role: UserRole; // 用户角色（'student'或'teacher'）
   bio?: string; // 用户简介
+  memoryId?: string; // AI助手的记忆体ID，用于个性化对话
   preferences?: {
     notifications: boolean;
     theme: string;
@@ -43,6 +44,36 @@ export interface User {
     learningStyle: string;
   };
 }
+
+/**
+ * 测试账号配置
+ * 包含不同学习水平的学生账号，用于演示AI助手的个性化回复
+ */
+export const TEST_ACCOUNTS = {
+  beginner: {
+    id: '1',
+    name: '初学者学生',
+    email: 'beginner@test.com',
+    role: 'student' as UserRole,
+    memoryId: '748182d5281c4032a10e70085ce6aea0', // 初学者记忆体ID
+    bio: '编程初学者，刚开始接触编程'
+  },
+  advanced: {
+    id: '2',
+    name: '进阶学生',
+    email: 'advanced@test.com',
+    role: 'student' as UserRole,
+    memoryId: '5e4ed1246f524fd4a7f56eb2a4120906', // 进阶学生记忆体ID
+    bio: '有一定编程基础，正在深入学习'
+  },
+  teacher: {
+    id: '3',
+    name: '测试教师',
+    email: 'teacher@test.com',
+    role: 'teacher' as UserRole,
+    bio: '资深教师'
+  }
+};
 
 /**
  * 检查用户是否已登录

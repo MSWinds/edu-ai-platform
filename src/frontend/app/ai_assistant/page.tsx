@@ -9,7 +9,7 @@ import { PlusIcon } from '@heroicons/react/24/outline';
 import DashboardSidebar from '../main_sidebar/DashboardSidebar';
 
 export default function AIAssistantPage() {
-  const { messages, sendMessage, isLoading, clearMessages } = useChat();
+  const { messages, sendMessage, isLoading, clearMessages, retryLastMessage } = useChat();
 
   const handleNewChat = () => {
     clearMessages();
@@ -34,7 +34,10 @@ export default function AIAssistantPage() {
         </div>
         
         <div className="flex-1 overflow-y-auto p-4">
-          <MessageList messages={messages} />
+          <MessageList 
+            messages={messages} 
+            onRetry={retryLastMessage}
+          />
         </div>
         
         <div className="border-t p-4">

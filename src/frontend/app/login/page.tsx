@@ -19,7 +19,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { login } from './auth';
+import { login, TEST_ACCOUNTS } from './auth';
 import Link from 'next/link';
 import { UserRole } from './auth';
 import AuthBackground from '../components/AuthBackground';
@@ -51,6 +51,12 @@ export default function LoginPage() {
    * 影响UI显示状态和测试账号填充行为
    */
   const [userType, setUserType] = useState<'student' | 'teacher'>('student');
+  
+  /**
+   * showTestOptions - 控制是否显示测试账号选项
+   * 点击测试账户按钮时显示
+   */
+  const [showTestOptions, setShowTestOptions] = useState(false);
   
   /**
    * error - 存储表单验证错误信息
@@ -88,29 +94,31 @@ export default function LoginPage() {
       return;
     }
     
-    // 测试环境下基于邮箱判断用户角色
-    // 注意：生产环境应从服务器获取实际角色
-    let role: UserRole = 'student'; // 默认为学生角色
-    let name = '测试学生';
+    // 测试环境下的账号验证逻辑
+    let userData = null;
     
-    if (email.includes('teacher')) {
-      role = 'teacher'; // 如果邮箱包含"teacher"，设为教师角色
-      name = '测试教师';
+    // 检查是否是预设的测试账号
+    if (email === TEST_ACCOUNTS.beginner.email) {
+      userData = TEST_ACCOUNTS.beginner;
+    } else if (email === TEST_ACCOUNTS.advanced.email) {
+      userData = TEST_ACCOUNTS.advanced;
+    } else if (email === TEST_ACCOUNTS.teacher.email) {
+      userData = TEST_ACCOUNTS.teacher;
+    } else {
+      // 如果不是测试账号，创建默认用户
+      userData = {
+        id: '999',
+        name: '自定义用户',
+        email: email,
+        role: email.includes('teacher') ? 'teacher' as UserRole : 'student' as UserRole
+      };
     }
-    
-    // 创建用户数据对象
-    const userData = {
-      id: '1', // 测试用户ID
-      name: name, // 用户姓名
-      email: email, // 用户邮箱
-      role: role // 用户角色
-    };
     
     // 执行登录操作，保存用户数据到sessionStorage
     login(userData);
     
     // 基于用户角色进行页面重定向
-    if (role === 'teacher') {
+    if (userData.role === 'teacher') {
       router.push('/teacher_dashboard'); // 教师重定向到教师仪表盘
     } else {
       router.push('/student_dashboard'); // 学生重定向到学生仪表盘
@@ -128,16 +136,20 @@ export default function LoginPage() {
    * 在生产环境中可以禁用或移除此功能，避免安全隐患
    * 
    * @param {'student' | 'teacher'} type - 用户选择的账号类型，决定填充哪种测试账号
+   * @param {'beginner' | 'advanced'} level - 学生等级（仅学生账号有效）
    */
-  const handleTestAccount = (type: 'student' | 'teacher') => {
-    if (type === 'student') {
-      setEmail('student@example.com'); // 填充学生测试邮箱
+  const handleTestAccount = (type: 'student' | 'teacher', level?: 'beginner' | 'advanced') => {
+    if (type === 'student' && level) {
+      // 根据学生等级选择对应的测试账号
+      const account = level === 'beginner' ? TEST_ACCOUNTS.beginner : TEST_ACCOUNTS.advanced;
+      setEmail(account.email);
       setPassword('password123'); // 填充测试密码
-    } else {
-      setEmail('teacher@example.com'); // 填充教师测试邮箱
+    } else if (type === 'teacher') {
+      setEmail(TEST_ACCOUNTS.teacher.email); // 填充教师测试邮箱
       setPassword('password123'); // 填充测试密码
     }
     setError(''); // 清除可能存在的错误信息
+    setShowTestOptions(false); // 隐藏测试选项
   };
 
   // 页面UI渲染
@@ -335,15 +347,46 @@ export default function LoginPage() {
             5. 使用动态文本显示当前选定的用户类型
             该功能适用于开发环境和演示环境，生产环境可考虑移除
           */}
-          <div className="mt-4 text-center">
-            <button
-              type="button"
-              onClick={() => handleTestAccount(userType)}
-              className="text-sm bg-gradient-to-r from-indigo-500 to-blue-500 bg-clip-text text-transparent hover:from-indigo-600 hover:to-blue-600 underline"
-            >
-              使用{userType === 'student' ? '学生' : '教师'}测试账户
-            </button>
-
+          <div className="mt-4 text-center relative">
+            {userType === 'student' ? (
+              <>
+                <button
+                  type="button"
+                  onClick={() => setShowTestOptions(!showTestOptions)}
+                  className="text-sm bg-gradient-to-r from-indigo-500 to-blue-500 bg-clip-text text-transparent hover:from-indigo-600 hover:to-blue-600 underline"
+                >
+                  使用学生测试账户
+                </button>
+                
+                {/* 测试账号选项下拉菜单 */}
+                {showTestOptions && (
+                  <div className="absolute left-1/2 transform -translate-x-1/2 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-10">
+                    <button
+                      type="button"
+                      onClick={() => handleTestAccount('student', 'beginner')}
+                      className="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm text-gray-700"
+                    >
+                      初学者账号
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleTestAccount('student', 'advanced')}
+                      className="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm text-gray-700"
+                    >
+                      进阶学生账号
+                    </button>
+                  </div>
+                )}
+              </>
+            ) : (
+              <button
+                type="button"
+                onClick={() => handleTestAccount('teacher')}
+                className="text-sm bg-gradient-to-r from-indigo-500 to-blue-500 bg-clip-text text-transparent hover:from-indigo-600 hover:to-blue-600 underline"
+              >
+                使用教师测试账户
+              </button>
+            )}
           </div>
           <p className="text-red-600 text-center">
               系统演示版本
