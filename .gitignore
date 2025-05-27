@@ -14,7 +14,6 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
 lib64/
 parts/
 sdist/
@@ -138,7 +137,7 @@ env.bak/
 venv.bak/
 
 node_modules/
-public/
+# public/
 .next/
 # Spyder project settings
 .spyderproject

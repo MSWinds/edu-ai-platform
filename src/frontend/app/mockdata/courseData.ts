@@ -191,46 +191,49 @@ export const mockUserData: UserData = {
         sections: [
           {
             title: '主题1：什么是提示工程？',
-            videoUrl: 'https://www.youtube.com/embed/Bq-ncjOGeVU',
+            videoUrl: '/topic1_video.mp4',
             quiz: [
               {
-                question: '提示工程的核心是什么？',
+                question: '你想让 AI 写一篇约 300 字、语言生动易懂、主题为“人工智能在护理行业中的应用”的短文，并举出一个具体案例。下面哪一个提示（Prompt）最符合提示工程的原则，最有可能一次就得到满意的答案？',
                 options: [
-                  { text: 'A. 设计输入', feedback: '正确，设计输入是提示工程的核心。' },
-                  { text: 'B. 选择模型', feedback: '不是哦，选择模型不是提示工程的核心。' },
-                  { text: 'C. 训练数据', feedback: '不是哦，训练数据不是提示工程的核心。' }
+                  { text: 'A. 「写一篇文章。」', feedback: '过于笼统：没有任何主题、长度、风格或格式要求，属于“含糊提问”。模型不知道你想要什么内容或深度，极易跑题或生成与护理无关的文章。' },
+                  { text: 'B. 请写一篇文章，主题是护理。」', feedback: '缺乏关键细节：虽然给出主题“护理”，但仍未说明篇幅、语言风格、是否需要举例等信息，也未指定角色。结果可能篇幅不符或内容泛泛而谈。' },
+                  { text: 'C. 「你是一名护理信息学专家。请写一篇约 300 字的短文，说明人工智能在护理行业中的应用，并举一个护理工作中使用 AI 的具体案例，语言生动、易于理解，分三段呈现。」', feedback: '最佳提示：① 指定角色（护理信息学专家）保证专业度；② 明确字数（约 300 字）和输出结构（分三段）；③ 给出主题与案例要求；④ 要求语言生动易懂。充分满足“清晰具体、提供上下文、指定角色、指明输出格式”等提示工程原则，因此最可能一次生成高质量答案。' },
+                  { text: 'D. 「「写 300 字，关于护理 AI。」', feedback: '信息不完整：只给了字数和主题关键词，没有说明语言风格、是否举例或结构要求，且未说明模型身份。尽管比 A/B 稍好，但仍缺少足够上下文和格式指令，会导致结果质量不稳定。' }
                 ],
-                answer: 0
+                answer: 2
               }
             ],
             completed: false
           },
           {
             title: '主题2：基础提示结构',
-            videoUrl: 'https://www.youtube.com/embed/YLykoLQ81w0 ',
+            videoUrl: '/topic2_basic_prompt_structure.pdf',
             quiz: [
               {
-                question: '基础提示结构包括哪些部分？',
+                question: '以下哪一项最能体现“格式要求（Format）”在结构化提示中的作用？',
                 options: [
-                  { text: 'A. 指令+上下文', feedback: '正确，基础提示结构包括指令和上下文。' },
-                  { text: 'B. 结果+反馈', feedback: '不是哦，结果和反馈不是基础提示结构。' },
-                  { text: 'C. 训练+推理', feedback: '不是哦，训练和推理不是基础提示结构。' }
+                  { text: 'A. 指定AI回答时要用律师的身份', feedback: '这个选项属于“角色（Role）”的设定，即让AI以特定身份或视角来回答问题。角色设定可以让回答更贴合专业领域，但它并没有规定答案的呈现形式，所以不属于“格式要求”' },
+                  { text: 'B. 让AI用项目符号列出要点，每条不超过20字', feedback: '正确！这就是“格式要求（Format）”的典型例子。你明确告诉AI答案要用项目符号（bullet points）来列出，而且每条要点的字数有具体限制。这种要求可以帮助你直接获得结构清晰、方便使用的输出，减少后期整理的工作量。' },
+                  { text: 'C. 要求AI解释某个法律概念', feedback: '这个选项是“指令（Instruction）”，即你在告诉AI需要完成什么具体任务，比如“解释”、“总结”或“分析”。虽然指令很重要，但它没有涉及答案的具体呈现方式，所以不属于“格式要求”。' },
+                  { text: 'D. 让AI用幽默的语气回答', feedback: '这个选项涉及的是“表达风格”或“语气”，有时可以作为格式要求的补充，但它本质上是对回答语气的规定，而不是对答案结构或输出形式的要求。格式要求通常更关注答案是以列表、表格、段落等形式输出。' }
                 ],
-                answer: 0
+                answer: 1
               }
             ],
             completed: false
           },
           {
             title: '主题3：少样本学习（Few-Shot Learning）',
-            videoUrl: 'https://www.youtube.com/embed/vufN-fZLMJM',
+            videoUrl: '/topic3_few_shot_learning.pdf',
             quiz: [
               {
-                question: 'Few-Shot Learning的关键是什么？',
+                question: '在以下哪种情况下，使用“少样本提示（Few-shot Prompting）”最能显著提升AI的输出效果？',
                 options: [
-                  { text: 'A. 多样本', feedback: '不是哦，Few-Shot Learning 关键是少样本。' },
-                  { text: 'B. 少样本', feedback: '正确，Few-Shot Learning 关键是少样本。' },
-                  { text: 'C. 无样本', feedback: '不是哦，Few-Shot Learning 不是无样本。' }
+                  { text: 'A. 你需要AI快速回答一个事实性问题，如：“中国的首都是哪里？”', feedback: '这个任务非常简单且标准化，通常使用零样本提示（zero-shot prompting）就能得到准确答案。不需要提供示例来引导模型输出格式或风格。' },
+                  { text: 'B. 你想让AI用特定格式写一份会议纪要，例如包括时间、地点、参与人和总结要点', feedback: '正确！这是一个非常适合使用少样本提示的场景。通过提供1-3个格式规范的会议纪要示例，可以让AI明确了解你期望的输出结构和内容要素，从而生成更符合预期的回答。' },
+                  { text: 'C. 你希望AI生成一段随机的小说情节，没有具体风格或结构要求', feedback: '如果对输出没有具体格式或风格要求，那么提供示例可能反而会限制AI的创造力，或者导致其偏离自由发挥的方向。这种情况下，零样本提示通常更适合。' },
+                  { text: 'D. 你要求AI翻译一段标准英文新闻句子成中文', feedback: '翻译属于高度结构化任务，尤其对于常见语言对（如英译中），AI已经训练得非常成熟。在这种情况下，即使不提供示例，也能获得高质量结果，因此few-shot提示并非必要。' }
                 ],
                 answer: 1
               }
@@ -239,30 +242,15 @@ export const mockUserData: UserData = {
           },
           {
             title: '主题4：链式思考提示（Chain-of-Thought）',
-            videoUrl: 'https://www.youtube.com/embed/AFE6x81AP4k',
+            videoUrl: '/topic4_cot.pdf',
             quiz: [
               {
-                question: '链式思考提示的优势是？',
+                question: '以下哪种场景最适合使用Chain-of-Thought（思维链）提示？',
                 options: [
-                  { text: 'A. 简单', feedback: '不是哦，链式思考提示的优势是逻辑推理。' },
-                  { text: 'B. 逻辑推理', feedback: '正确，链式思考提示的优势是逻辑推理。' },
-                  { text: 'C. 随机性', feedback: '不是哦，链式思考提示不是随机性。' }
-                ],
-                answer: 1
-              }
-            ],
-            completed: false
-          },
-          {
-            title: '主题5：ReAct 提示（结合推理与行动）',
-            videoUrl: 'https://www.youtube.com/embed/1ju-tV3wbqM ',
-            quiz: [
-              {
-                question: 'ReAct 提示的特点是？',
-                options: [
-                  { text: 'A. 只推理', feedback: '不是哦，ReAct 提示是推理与行动结合。' },
-                  { text: 'B. 只行动', feedback: '不是哦，ReAct 提示是推理与行动结合。' },
-                  { text: 'C. 推理与行动结合', feedback: '正确，ReAct 提示的特点是推理与行动结合。' }
+                  { text: 'A. 让AI直接回答“中国的首都是哪个城市？”', feedback: '这是一个简单的事实性问题，不需要多步推理。AI可以直接给出答案（北京），使用思维链提示反而冗余。' },
+                  { text: 'B. 让AI写一首关于春天的诗', feedback: '诗歌创作属于创意性任务，需要自由发挥而非逻辑推理。思维链提示更适合需要结构化分析的场景。' },
+                  { text: 'C. 让AI分析患者发烧、咳嗽、呼吸急促的可能病因，并给出诊断依据', feedback: '正确！医学诊断需要综合症状、排除可能性并逐步推理，这正是思维链提示的典型应用场景。通过分步骤分析症状（如发热→感染可能，咳嗽→呼吸道问题，呼吸急促→肺部受累），AI的结论会更可靠且可验证。' },
+                  { text: 'D. 让AI将100条用户评论分类为“好评”或“差评”', feedback: '分类任务通常不需要复杂推理，直接使用指令（如“请分类以下评论”）或简单示例即可。思维链提示在此场景中价值有限。' }
                 ],
                 answer: 2
               }
@@ -270,37 +258,54 @@ export const mockUserData: UserData = {
             completed: false
           },
           {
-            title: '主题6：提示迭代（Prompt Iteration）',
-            videoUrl: 'https://www.youtube.com/embed/cWaJurbtY30',
+            title: '主题5：提示迭代（Prompt Iteration）',
+            videoUrl: '/topic5_iterative_prompting.pdf',
             quiz: [
               {
-                question: '提示迭代的目标是？',
+                question: '在使用AI写作或问答时，为什么“提示迭代（Iterative Prompting）”是一种非常重要的技巧？',
                 options: [
-                  { text: 'A. 优化提示', feedback: '正确，提示迭代的目标是优化提示。' },
-                  { text: 'B. 增加样本', feedback: '不是哦，提示迭代的目标不是增加样本。' },
-                  { text: 'C. 降低准确率', feedback: '不是哦，提示迭代的目标不是降低准确率。' }
-                ],
-                answer: 0
-              }
-            ],
-            completed: false
-          },
-          {
-            title: '主题7：总结与挑战活动',
-            videoUrl: 'https://www.youtube.com/embed/A-K3S-koHAA ',
-            quiz: [
-              {
-                question: '本周你最大的收获是？',
-                options: [
-                  { text: 'A. 技术', feedback: '不错，技术是很重要的收获。' },
-                  { text: 'B. 思维', feedback: '很棒，思维提升是本周的重点！' },
-                  { text: 'C. 沟通', feedback: '沟通能力也很重要，继续加油！' }
+                  { text: 'A.  因为AI每次的回答都是完全随机的，必须多试几次才有可能碰到好答案', feedback: 'AI的回答并不是完全随机的，而是根据你的提示和上下文生成的。多次尝试的意义在于优化提示，而不是“碰运气”' },
+                  { text: 'B. 因为通过多轮修改和反馈，可以逐步优化提示，让AI输出更接近你的真实需求', feedback: '正确！提示迭代的核心就是通过反复调整和反馈，让AI的回答越来越符合你的要求。这是高效使用AI的关键方法。' },
+                  { text: 'C. 因为AI只能理解非常简单的指令，复杂任务无法完成', feedback: 'AI可以完成复杂任务，只要你的提示足够清晰具体。迭代的作用是让复杂任务的提示越来越完善.' },
+                  { text: 'D. 因为每次修改提示都会让AI忘记之前的内容', feedback: '实际上，每次你修改提示，AI会根据新提示重新生成答案。迭代的价值在于你能不断补充和调整需求，而不是让AI“遗忘”' }
                 ],
                 answer: 1
               }
             ],
             completed: false
-          }
+          },
+          // {
+          //   title: '主题6：提示迭代（Prompt Iteration）',
+          //   videoUrl: 'https://www.youtube.com/embed/cWaJurbtY30',
+          //   quiz: [
+          //     {
+          //       question: '提示迭代的目标是？',
+          //       options: [
+          //         { text: 'A. 优化提示', feedback: '正确，提示迭代的目标是优化提示。' },
+          //         { text: 'B. 增加样本', feedback: '不是哦，提示迭代的目标不是增加样本。' },
+          //         { text: 'C. 降低准确率', feedback: '不是哦，提示迭代的目标不是降低准确率。' }
+          //       ],
+          //       answer: 0
+          //     }
+          //   ],
+          //   completed: false
+          // },
+          // {
+          //   title: '主题7：总结与挑战活动',
+          //   videoUrl: 'https://www.youtube.com/embed/A-K3S-koHAA ',
+          //   quiz: [
+          //     {
+          //       question: '本周你最大的收获是？',
+          //       options: [
+          //         { text: 'A. 技术', feedback: '不错，技术是很重要的收获。' },
+          //         { text: 'B. 思维', feedback: '很棒，思维提升是本周的重点！' },
+          //         { text: 'C. 沟通', feedback: '沟通能力也很重要，继续加油！' }
+          //       ],
+          //       answer: 1
+          //     }
+          //   ],
+          //   completed: false
+          // }
         ]
       },
       {

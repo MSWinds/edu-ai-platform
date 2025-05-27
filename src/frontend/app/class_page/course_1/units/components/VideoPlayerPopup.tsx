@@ -25,8 +25,11 @@ export default function VideoPlayerPopup({ isOpen, onClose, sections }: VideoPla
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [quizCompleted, setQuizCompleted] = useState(false);
   const [optionFeedback, setOptionFeedback] = useState<string | null>(null);
+  const [attempts, setAttempts] = useState(0);
+  const [showCompletionDialog, setShowCompletionDialog] = useState(false);
 
   const currentSection = sections[currentSectionIndex];
+  const isLastSection = currentSectionIndex === sections.length - 1;
 
   const handleNextSection = () => {
     if (currentSectionIndex < sections.length - 1) {
@@ -35,6 +38,7 @@ export default function VideoPlayerPopup({ isOpen, onClose, sections }: VideoPla
       setSelectedAnswer(null);
       setQuizCompleted(false);
       setOptionFeedback(null);
+      setAttempts(0);
     }
   };
 
@@ -45,6 +49,7 @@ export default function VideoPlayerPopup({ isOpen, onClose, sections }: VideoPla
       setSelectedAnswer(null);
       setQuizCompleted(false);
       setOptionFeedback(null);
+      setAttempts(0);
     }
   };
 
@@ -53,15 +58,32 @@ export default function VideoPlayerPopup({ isOpen, onClose, sections }: VideoPla
     setSelectedAnswer(null);
     setQuizCompleted(false);
     setOptionFeedback(null);
+    setAttempts(0);
   };
 
   const handleOptionClick = (index: number) => {
     setSelectedAnswer(index);
     setOptionFeedback(currentSection.quiz[0].options[index].feedback);
+    
+    if (index === currentSection.quiz[0].answer) {
+      setQuizCompleted(true);
+    } else {
+      setAttempts(prev => prev + 1);
+    }
   };
 
-  const handleQuizComplete = () => {
-    setQuizCompleted(true);
+  const handleRetry = () => {
+    setSelectedAnswer(null);
+    setOptionFeedback(null);
+  };
+
+  const handleCompleteLearning = () => {
+    setShowCompletionDialog(true);
+  };
+
+  const handleCloseCompletionDialog = () => {
+    setShowCompletionDialog(false);
+    onClose();
   };
 
   return (
@@ -69,7 +91,7 @@ export default function VideoPlayerPopup({ isOpen, onClose, sections }: VideoPla
       <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
       
       <div className="fixed inset-0 flex items-center justify-center p-4">
-        <Dialog.Panel className="mx-auto w-full max-w-7xl h-[80vh] bg-white rounded-xl shadow-lg flex">
+        <Dialog.Panel className="mx-auto w-full max-w-7xl h-[90vh] bg-white rounded-xl shadow-lg flex">
           {/* Left sidebar with sections */}
           <div className="w-1/4 border-r border-gray-200 overflow-y-auto">
             <div className="p-4">
@@ -117,27 +139,42 @@ export default function VideoPlayerPopup({ isOpen, onClose, sections }: VideoPla
 
             {/* Video player */}
             {!quizStarted && (
-              <div className="flex-1 bg-black">
-                <iframe
-                  src={currentSection.videoUrl}
-                  className="w-full h-full"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                />
+              <div className="flex-1 bg-black relative">
+                {currentSection.videoUrl.includes('youtube.com') ? (
+                  <iframe
+                    src={currentSection.videoUrl}
+                    className="absolute inset-0 w-full h-full"
+                    allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                ) : currentSection.videoUrl.endsWith('.pdf') ? (
+                  <iframe
+                    src={currentSection.videoUrl}
+                    className="absolute inset-0 w-full h-full"
+                  />
+                ) : (
+                  <video
+                    src={currentSection.videoUrl}
+                    className="absolute inset-0 w-full h-full object-contain"
+                    controls
+                  />
+                )}
               </div>
             )}
 
             {/* Quiz section */}
-            <div className="p-6 border-t border-gray-200">
+            <div className="p-6 border-t border-gray-200 bg-white">
               {!quizStarted && !quizCompleted && (
-                <button
-                  onClick={handleQuizStart}
-                  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                >
-                  开始测验
-                </button>
+                <div className="flex justify-end">
+                  <button
+                    onClick={handleQuizStart}
+                    className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  >
+                    开始测验
+                  </button>
+                </div>
               )}
-              {quizStarted && !quizCompleted && (
+              {quizStarted && (
                 <div className="space-y-4">
                   <h4 className="text-lg font-semibold text-gray-900 mb-4">测验</h4>
                   <p className="text-gray-700">{currentSection.quiz[0].question}</p>
@@ -146,7 +183,7 @@ export default function VideoPlayerPopup({ isOpen, onClose, sections }: VideoPla
                       <button
                         key={index}
                         onClick={() => handleOptionClick(index)}
-                        disabled={selectedAnswer === currentSection.quiz[0].answer}
+                        disabled={selectedAnswer !== null}
                         className={`w-full text-left px-4 py-3 rounded-lg border transition-colors ${
                           selectedAnswer === index
                             ? (selectedAnswer === currentSection.quiz[0].answer ? 'border-green-500 bg-green-50' : 'border-red-500 bg-red-50')
@@ -158,21 +195,28 @@ export default function VideoPlayerPopup({ isOpen, onClose, sections }: VideoPla
                     ))}
                   </div>
                   {optionFeedback && (
-                    <div className={`text-base font-semibold ${selectedAnswer === currentSection.quiz[0].answer ? 'text-green-600' : 'text-red-600'}`}>{optionFeedback}</div>
+                    <div className={`text-base font-semibold ${selectedAnswer === currentSection.quiz[0].answer ? 'text-green-600' : 'text-red-600'}`}>
+                      {optionFeedback}
+                    </div>
                   )}
-                  {selectedAnswer === currentSection.quiz[0].answer && (
+                  {selectedAnswer !== null && selectedAnswer !== currentSection.quiz[0].answer && attempts < 2 && (
                     <button
-                      onClick={handleQuizComplete}
-                      className="w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                      onClick={handleRetry}
+                      className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                     >
-                      完成测验
+                      再试一次
                     </button>
                   )}
-                </div>
-              )}
-              {quizCompleted && (
-                <div className="space-y-4">
-                  <div className="text-lg font-semibold text-green-600">测验已完成，可进入下一节！</div>
+                  {selectedAnswer === currentSection.quiz[0].answer && (
+                    <div className="text-lg font-semibold text-green-600">
+                      测验已完成！
+                    </div>
+                  )}
+                  {selectedAnswer !== null && selectedAnswer !== currentSection.quiz[0].answer && attempts >= 2 && (
+                    <div className="text-lg font-semibold text-red-600">
+                      已达到最大尝试次数，请进入下一节
+                    </div>
+                  )}
                 </div>
               )}
             </div>
@@ -186,17 +230,54 @@ export default function VideoPlayerPopup({ isOpen, onClose, sections }: VideoPla
               >
                 上一节
               </button>
-              <button
-                onClick={handleNextSection}
-                disabled={currentSectionIndex === sections.length - 1 || !quizCompleted}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                下一节
-              </button>
+              {isLastSection && selectedAnswer === currentSection.quiz[0].answer ? (
+                <button
+                  onClick={handleCompleteLearning}
+                  className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                >
+                  完成学习
+                </button>
+              ) : !isLastSection && (
+                <button
+                  onClick={handleNextSection}
+                  disabled={!quizCompleted && attempts < 2}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  下一节
+                </button>
+              )}
             </div>
           </div>
         </Dialog.Panel>
       </div>
+
+      {/* Completion Dialog */}
+      <Dialog
+        open={showCompletionDialog}
+        onClose={() => setShowCompletionDialog(false)}
+        className="relative z-50"
+      >
+        <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
+        
+        <div className="fixed inset-0 flex items-center justify-center p-4">
+          <Dialog.Panel className="mx-auto max-w-sm rounded-xl bg-white p-6 shadow-lg">
+            <Dialog.Title className="text-xl font-semibold text-gray-900 mb-4 text-center">
+              恭喜你完成本周的学习！
+            </Dialog.Title>
+            <p className="text-gray-600 mb-6 text-center">
+              现在轮到你了
+            </p>
+            <div className="flex justify-center">
+              <button
+                onClick={handleCloseCompletionDialog}
+                className="px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-lg font-medium"
+              >
+                进入本周练习
+              </button>
+            </div>
+          </Dialog.Panel>
+        </div>
+      </Dialog>
     </Dialog>
   );
 } 
