@@ -76,7 +76,7 @@ export function FloatingChat() {
           >
             <PlusIcon className="w-5 h-5 text-gray-600" />
           </button>
-          <span className="font-medium">AI助教</span>
+          <span className="font-medium">AI智能助教</span>
         </div>
         <div className="flex items-center space-x-1">
           <button

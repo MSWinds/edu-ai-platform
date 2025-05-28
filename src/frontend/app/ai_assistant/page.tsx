@@ -20,7 +20,7 @@ export default function AIAssistantPage() {
       <div className="flex flex-col h-screen bg-white">
         <div className="p-4 border-b flex items-center justify-between">
           <div>
-            <h1 className="text-xl font-bold">AI助教</h1>
+            <h1 className="text-xl font-bold">AI智能助教</h1>
             <p className="text-sm text-gray-500">智能解答课程问题，提供学习支持</p>
           </div>
           <button

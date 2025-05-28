@@ -1,7 +1,9 @@
 import { useEffect, useRef } from 'react';
 import { ChatMessage } from '../types/chat';
 import { ExclamationTriangleIcon, ArrowPathIcon } from '@heroicons/react/24/outline';
-import ReactMarkdown from 'react-markdown';
+import { MessageContent } from './MessageContent';
+import { MessageReferences } from './MessageReferences';
+import Image from 'next/image';
 
 interface MessageListProps {
   messages: ChatMessage[];
@@ -16,16 +18,21 @@ export function MessageList({ messages, onRetry }: MessageListProps) {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  function stripRefs(text: string): string {
-    // 去除所有 <ref>[...]</ref> 标记
-    return text.replace(/<ref>\[[^\]]*\]<\/ref>/g, '');
-  }
-
   if (messages.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center h-full text-gray-500">
-        <div className="text-6xl mb-4">🤖</div>
-        <p className="text-lg font-medium">欢迎使用AI助教</p>
+        <div className="mb-4 relative w-37 h-35">
+          <video 
+            src="/icons/AI-Animation2.webm" 
+            width={150} 
+            height={150}
+            autoPlay
+            loop
+            muted
+            className="rounded-full"
+          />
+        </div>
+        <p className="text-lg font-medium">欢迎使用AI智能助教</p>
         <p className="text-sm mt-2 text-center max-w-md">
           我是您的专属学习助手，可以回答课程相关问题、提供学习建议。
           <br />
@@ -59,7 +66,18 @@ export function MessageList({ messages, onRetry }: MessageListProps) {
                     message.error ? 'bg-red-500' : 
                     message.isStreaming ? 'bg-yellow-500 animate-pulse' : 'bg-green-500'
                   }`}></span>
-                  AI助教
+                  <span className="flex items-center gap-1">
+                    <video 
+                      src="/icons/AI-Animation2.webm" 
+                      width={16} 
+                      height={16}
+                      autoPlay
+                      loop
+                      muted
+                      className="inline-block rounded-full"
+                    />
+                    AI智能助教
+                  </span>
                   {message.isStreaming && (
                     <span className="text-xs text-gray-500 animate-pulse">正在思考...</span>
                   )}
@@ -88,21 +106,16 @@ export function MessageList({ messages, onRetry }: MessageListProps) {
                 <ExclamationTriangleIcon className="w-5 h-5 flex-shrink-0 mt-0.5" />
                 <div>
                   <div className="font-medium">发送失败</div>
-                  <div className="text-sm">{stripRefs(message.content)}</div>
+                  <div className="text-sm">{message.content}</div>
                 </div>
               </div>
             ) : (
               <div className="prose prose-sm max-w-none dark:prose-invert">
                 <div className="whitespace-pre-wrap break-words">
-                  <ReactMarkdown
-                    components={{
-                      p: ({ children }) => <p className="my-1">{children}</p>,
-                      pre: ({ children }) => <pre className="my-2">{children}</pre>,
-                      code: ({ children }) => <code className="bg-gray-100 dark:bg-gray-800 px-1 rounded">{children}</code>,
-                    }}
-                  >
-                    {stripRefs(message.content)}
-                  </ReactMarkdown>
+                  <MessageContent 
+                    content={message.content} 
+                    docReferences={message.docReferences}
+                  />
                   {message.isStreaming && (
                     <span className="inline-block w-2 h-5 bg-gray-400 animate-pulse ml-1"></span>
                   )}
@@ -111,7 +124,15 @@ export function MessageList({ messages, onRetry }: MessageListProps) {
             )}
           </div>
           
-          {/* 课程引用 */}
+          {/* 文档引用列表 */}
+          {message.role === 'assistant' && !message.error && (
+            <MessageReferences 
+              references={message.docReferences} 
+              content={message.content}
+            />
+          )}
+          
+          {/* 课程引用（原有功能保留） */}
           {message.courseReferences && message.courseReferences.length > 0 && (
             <div className="mt-3 text-xs text-gray-600">
               <div className="font-medium mb-1">📚 引用的课程内容:</div>
@@ -132,12 +153,34 @@ export function MessageList({ messages, onRetry }: MessageListProps) {
           )}
 
           {/* 消息元数据 */}
-          <div className="mt-2 flex items-center justify-between text-xs text-gray-400">
-            <span>{message.timestamp.toLocaleTimeString()}</span>
-            {message.requestId && (
-              <span title={`Request ID: ${message.requestId}`}>
-                ID: {message.requestId.slice(-8)}
-              </span>
+          <div className="mt-2 flex items-center justify-between text-[11px] text-gray-400">
+            <span>{message.timestamp.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })}</span>
+            {message.role === 'assistant' && !message.error && (
+              <div className="flex items-center gap-3 text-[10px]">
+                {message.model && (
+                  <span className="flex items-center gap-1" title="使用的模型">
+                    <Image 
+                      src="/icons/tongyi_model.jpg" 
+                      alt="通义" 
+                      width={14} 
+                      height={14}
+                      className="rounded"
+                      unoptimized
+                    />
+                    {message.model}
+                  </span>
+                )}
+                {message.responseTime && (
+                  <span title="响应时间">
+                    {(message.responseTime / 1000).toFixed(1)}s
+                  </span>
+                )}
+                {message.requestId && (
+                  <span className="opacity-50" title={`请求ID: ${message.requestId}`}>
+                    #{message.requestId.slice(-6)}
+                  </span>
+                )}
+              </div>
             )}
           </div>
         </div>

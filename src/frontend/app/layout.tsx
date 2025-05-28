@@ -9,7 +9,7 @@ const geistMono = GeistMono;
 
 export const metadata: Metadata = {
   title: "AI学习平台 - 智能驱动个性化学习",
-  description: "使用AI技术打造个性化学习体验，包括智能能力评估、定制化学习路径和24小时AI助教",
+  description: "使用AI技术打造个性化学习体验，包括智能能力评估、定制化学习路径和24小时AI智能助教",
 };
 
 export default function RootLayout({

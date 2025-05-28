@@ -10,6 +10,10 @@ export interface DashScopeRequest {
   has_thoughts?: boolean;
   memory_id?: string;
   messages?: DashScopeMessage[];
+  rag_options?: {
+    pipeline_ids: string[];
+  };
+  enable_system_time?: boolean;
 }
 
 export interface DashScopeResponse {
@@ -18,6 +22,24 @@ export interface DashScopeResponse {
     thoughts?: Array<{
       action_type: string;
       thought: string;
+    }>;
+    doc_references?: Array<{
+      index_id: string;
+      title: string;
+      doc_id: string;
+      doc_name: string;
+      text: string;
+      doc_url?: string;
+      biz_id?: string;
+      images?: string[];
+      page_number?: number;
+    }>;
+  };
+  usage?: {
+    models?: Array<{
+      model_id: string;
+      input_tokens: number;
+      output_tokens: number;
     }>;
   };
   status_code: number;
@@ -44,7 +66,9 @@ export class DashScopeAPI {
       parameters: {
         stream: request.stream || false,
         incremental_output: request.incremental_output || false,
-        has_thoughts: request.has_thoughts || false,
+        has_thoughts: request.has_thoughts || true,
+        enable_system_time: request.enable_system_time !== false,
+        ...(request.rag_options && { rag_options: request.rag_options }),
       },
       debug: {},
       ...(request.memory_id && { memory_id: request.memory_id }),
@@ -77,7 +101,9 @@ export class DashScopeAPI {
       parameters: {
         stream: true,
         incremental_output: request.incremental_output || true,
-        has_thoughts: request.has_thoughts || false,
+        has_thoughts: request.has_thoughts || true,
+        enable_system_time: request.enable_system_time !== false,
+        ...(request.rag_options && { rag_options: request.rag_options }),
       },
       debug: {},
       ...(request.memory_id && { memory_id: request.memory_id }),
@@ -136,8 +162,10 @@ export class DashScopeAPI {
               const transformedChunk: DashScopeResponse = {
                 output: {
                   text: parsed.output?.text || '',
-                  thoughts: parsed.output?.thoughts || []
+                  thoughts: parsed.output?.thoughts || [],
+                  doc_references: parsed.output?.doc_references || undefined,
                 },
+                usage: parsed.usage || undefined,
                 status_code: 200,
                 request_id: parsed.request_id || '',
                 message: ''

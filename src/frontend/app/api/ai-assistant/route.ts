@@ -28,6 +28,11 @@ export async function POST(request: NextRequest) {
       prompt: finalPrompt,
       stream: false,
       memory_id: finalMemoryId,
+      has_thoughts: true,
+      enable_system_time: true,
+      rag_options: {
+        pipeline_ids: [process.env.DASHSCOPE_PIPELINE_ID || "gqhpyjb6l1"],  // 从环境变量读取或使用默认值
+      },
     });
 
     // 检查响应状态
@@ -39,10 +44,16 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 返回AI回复
+    // 返回AI回复，包含文档引用等完整信息
     return NextResponse.json({
       content: response.output.text || '抱歉，我无法理解您的问题。',
       request_id: response.request_id,
+      doc_references: response.output.doc_references || [],
+      model: response.usage?.models?.[0]?.model_id,
+      usage: {
+        inputTokens: response.usage?.models?.[0]?.input_tokens,
+        outputTokens: response.usage?.models?.[0]?.output_tokens,
+      },
     });
 
   } catch (error) {

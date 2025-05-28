@@ -32,11 +32,20 @@ export async function POST(request: NextRequest) {
           const finalMemoryId = memoryId || process.env.DASHSCOPE_DEFAULT_MEMORY_ID;
 
           // 调用流式API
+          let docReferences = null;
+          let modelInfo = null;
+          let usageInfo = null;
+          
           for await (const chunk of api.callApplicationStream({
             prompt: finalPrompt,
             stream: true,
             incremental_output: true,
             memory_id: finalMemoryId,
+            has_thoughts: true,
+            enable_system_time: true,
+            rag_options: {
+              pipeline_ids: [process.env.DASHSCOPE_PIPELINE_ID || "gqhpyjb6l1"],  // 从环境变量读取或使用默认值
+            },
           })) {
             chunkCount++;
 
@@ -49,6 +58,19 @@ export async function POST(request: NextRequest) {
               );
               controller.close();
               return;
+            }
+
+            // 保存文档引用和元数据（通常在最后一个chunk中）
+            if (chunk.output?.doc_references) {
+              console.log('🔥 服务端收到doc_references:', chunk.output.doc_references);
+              docReferences = chunk.output.doc_references;
+            }
+            if (chunk.usage?.models?.[0]) {
+              modelInfo = chunk.usage.models[0].model_id;
+              usageInfo = {
+                inputTokens: chunk.usage.models[0].input_tokens,
+                outputTokens: chunk.usage.models[0].output_tokens,
+              };
             }
 
             // 处理文本输出
@@ -82,6 +104,22 @@ export async function POST(request: NextRequest) {
                 );
               }
             }
+          }
+
+          // 发送文档引用和元数据
+          console.log('📤 准备发送metadata, docReferences:', docReferences);
+          if (docReferences || modelInfo || usageInfo) {
+            const metaData = {
+              type: 'metadata',
+              doc_references: docReferences,
+              model: modelInfo,
+              usage: usageInfo,
+            };
+            
+            console.log('📤 发送metadata:', JSON.stringify(metaData));
+            controller.enqueue(
+              encoder.encode(`data: ${JSON.stringify(metaData)}\n\n`)
+            );
           }
 
           // 发送完成信号

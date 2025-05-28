@@ -4,9 +4,16 @@ export interface ChatMessage {
   role: 'user' | 'assistant';
   timestamp: Date;
   courseReferences?: CourseReference[];
+  docReferences?: DocReference[];
   isStreaming?: boolean;
   error?: string;
   requestId?: string;
+  model?: string;
+  usage?: {
+    inputTokens: number;
+    outputTokens: number;
+  };
+  responseTime?: number; // 响应时间（毫秒）
 }
 
 export interface CourseReference {
@@ -17,6 +24,19 @@ export interface CourseReference {
   contentType: 'lecture' | 'assignment' | 'resource';
   contentName?: string;
   content?: string; // 用于API传递的内容
+}
+
+// 文档引用类型（来自DashScope API）
+export interface DocReference {
+  index_id: string;      // 对应text中的<ref>[n]</ref>
+  title: string;         // 文档标题
+  doc_id: string;        // 文档ID
+  doc_name: string;      // 文档名称
+  text: string;          // 引用的具体内容
+  doc_url?: string;      // 文档URL（可选）
+  biz_id?: string;       // 业务ID（可选）
+  images?: string[];     // 图片列表（可选）
+  page_number?: number;  // 页码（可选）
 }
 
 // API请求类型

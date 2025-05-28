@@ -1,6 +1,17 @@
 import { useState, useCallback, useRef } from 'react';
-import type { ChatMessage, CourseReference, AIAssistantRequest, StreamChunk } from '../types/chat';
+import type { ChatMessage, CourseReference, AIAssistantRequest, StreamChunk, DocReference } from '../types/chat';
 import { getUser } from '../../login/auth';
+
+// 更新StreamChunk类型定义
+interface ExtendedStreamChunk extends StreamChunk {
+  type: 'text' | 'thought' | 'error' | 'metadata';
+  doc_references?: DocReference[];
+  model?: string;
+  usage?: {
+    inputTokens: number;
+    outputTokens: number;
+  };
+}
 
 export function useChat() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -8,7 +19,12 @@ export function useChat() {
   const abortControllerRef = useRef<AbortController | null>(null);
 
   // 非流式API调用
-  const callAIAPI = async (request: AIAssistantRequest): Promise<string> => {
+  const callAIAPI = async (request: AIAssistantRequest): Promise<{
+    content: string;
+    docReferences?: DocReference[];
+    model?: string;
+    usage?: { inputTokens: number; outputTokens: number };
+  }> => {
     const response = await fetch('/api/ai-assistant', {
       method: 'POST',
       headers: {
@@ -28,13 +44,22 @@ export function useChat() {
       throw new Error(data.error);
     }
 
-    return data.content;
+    // 添加调试日志
+    console.log('🔍 API返回的原始数据:', data);
+    console.log('🔍 文档引用数据:', data.doc_references);
+
+    return {
+      content: data.content,
+      docReferences: data.doc_references,
+      model: data.model,
+      usage: data.usage,
+    };
   };
 
   // 流式API调用
   const callStreamAPI = async (
     request: AIAssistantRequest,
-    onChunk: (chunk: StreamChunk) => void
+    onChunk: (chunk: ExtendedStreamChunk) => void
   ): Promise<void> => {
     const response = await fetch('/api/ai-assistant-stream', {
       method: 'POST',
@@ -79,8 +104,9 @@ export function useChat() {
             }
             
             try {
-              const chunk: StreamChunk = JSON.parse(data);
+              const chunk: ExtendedStreamChunk = JSON.parse(data);
               chunkCount++;
+              console.log(`🌊 收到流式chunk #${chunkCount}:`, chunk);
               onChunk(chunk);
             } catch (e) {
               console.warn('⚠️ 解析SSE数据失败:', data, e);
@@ -110,6 +136,9 @@ export function useChat() {
     abortControllerRef.current = new AbortController();
 
     setIsLoading(true);
+
+    // 记录开始时间
+    const startTime = Date.now();
 
     // 添加用户消息
     const userMessage: ChatMessage = {
@@ -150,6 +179,9 @@ export function useChat() {
       if (useStream) {
         // 流式响应处理
         let fullContent = '';
+        let docReferences: DocReference[] | undefined;
+        let model: string | undefined;
+        let usage: { inputTokens: number; outputTokens: number } | undefined;
         
         await callStreamAPI(request, (chunk) => {
           if (chunk.error) {
@@ -170,26 +202,45 @@ export function useChat() {
                   : msg
               )
             );
+          } else if (chunk.type === 'metadata') {
+            // 保存元数据
+            console.log('📦 收到metadata chunk:', chunk);
+            docReferences = chunk.doc_references;
+            model = chunk.model;
+            usage = chunk.usage;
           }
         });
 
-        // 完成流式响应
+        // 完成流式响应，更新文档引用和元数据
+        console.log('✅ 流式响应完成，文档引用:', docReferences);
+        const responseTime = Date.now() - startTime;
         setMessages(prev => 
           prev.map(msg => 
             msg.id === aiMessageId 
-              ? { ...msg, isStreaming: false }
+              ? { 
+                  ...msg, 
+                  isStreaming: false,
+                  docReferences,
+                  model,
+                  usage,
+                  responseTime,
+                }
               : msg
           )
         );
 
       } else {
         // 非流式响应
-        const responseContent = await callAIAPI(request);
+        const response = await callAIAPI(request);
         
         const finalAiMessage: ChatMessage = {
           ...aiMessage,
-          content: responseContent,
+          content: response.content,
+          docReferences: response.docReferences,
+          model: response.model,
+          usage: response.usage,
           isStreaming: false,
+          responseTime: Date.now() - startTime,
         };
 
         setMessages(prev => [...prev, finalAiMessage]);

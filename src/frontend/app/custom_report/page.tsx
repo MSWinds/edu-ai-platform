@@ -385,7 +385,7 @@ const CustomReportPage = () => {
 
                 {/* 鼓励语 */}
                 <section className="bg-white rounded-lg shadow p-6 flex flex-col gap-2">
-                  <div className="text-lg font-bold text-blue-700 mb-2">💬 AI助教鼓励</div>
+                  <div className="text-lg font-bold text-blue-700 mb-2">💬 AI智能助教鼓励</div>
                   <div className="text-gray-800">{reportData.encouragement}</div>
                 </section>
               </>
