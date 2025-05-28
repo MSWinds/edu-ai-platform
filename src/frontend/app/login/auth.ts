@@ -192,9 +192,9 @@ export function redirectIfAuthenticated(router: AppRouterInstance): boolean {
 export function redirectToDashboard(router: AppRouterInstance, user: User): void {
   try {
     if (user.role === 'teacher') {
-      router.push('/dashboard/teacher'); // 教师重定向到教师仪表盘
+      router.push('/teacher_dashboard'); // Updated to match the actual teacher dashboard path
     } else {
-      router.push('/dashboard'); // 学生重定向到学生仪表盘
+      router.push('/student_dashboard'); // Updated to match the actual student dashboard path
     }
   } catch (error) {
     console.error('重定向到仪表盘时出错:', error);

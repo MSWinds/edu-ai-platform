@@ -5,12 +5,6 @@ import { mockUserData } from "../../../mockdata/courseData";
 import { useState } from "react";
 import VideoPlayerPopup from "./components/VideoPlayerPopup";
 
-// mock 学习资料
-const mockResources = [
-  { id: 1, title: "AI发展史PPT", type: "ppt", url: "#" },
-  { id: 2, title: "推荐阅读：AI伦理论文", type: "pdf", url: "#" }
-];
-
 export default function UnitsPage() {
   const [isVideoPlayerOpen, setIsVideoPlayerOpen] = useState(false);
   const week7 = mockUserData.course.weeks[6]; // Week 7 is at index 6
@@ -89,7 +83,7 @@ export default function UnitsPage() {
                       <div>
                         <div className="text-lg font-medium text-gray-700 mb-2">学习资料</div>
                         <ul className="space-y-2">
-                          {mockResources.map(res => (
+                          {week.resources.map(res => (
                             <li key={res.id} className="flex items-center justify-between text-base bg-white rounded px-4 py-2">
                               <span>{res.title}</span>
                               <button className="px-3 py-1 rounded bg-green-50 text-green-700 text-sm font-medium hover:bg-green-100 transition">下载</button>

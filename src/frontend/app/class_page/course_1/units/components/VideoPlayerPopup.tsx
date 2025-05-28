@@ -123,7 +123,7 @@ export default function VideoPlayerPopup({ isOpen, onClose, sections }: VideoPla
           </div>
 
           {/* Main content area */}
-          <div className="flex-1 flex flex-col">
+          <div className="flex-1 flex flex-col h-full">
             {/* Header */}
             <div className="p-4 border-b border-gray-200 flex items-center justify-between">
               <Dialog.Title className="text-xl font-semibold text-gray-900">
@@ -139,23 +139,23 @@ export default function VideoPlayerPopup({ isOpen, onClose, sections }: VideoPla
 
             {/* Video player */}
             {!quizStarted && (
-              <div className="flex-1 bg-black relative">
+              <div className="flex-1 bg-black relative flex items-center justify-center overflow-hidden">
                 {currentSection.videoUrl.includes('youtube.com') ? (
                   <iframe
                     src={currentSection.videoUrl}
-                    className="absolute inset-0 w-full h-full"
+                    className="w-[98%] h-[98%]"
                     allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
                   />
                 ) : currentSection.videoUrl.endsWith('.pdf') ? (
                   <iframe
                     src={currentSection.videoUrl}
-                    className="absolute inset-0 w-full h-full"
+                    className="w-[98%] h-[98%]"
                   />
                 ) : (
                   <video
                     src={currentSection.videoUrl}
-                    className="absolute inset-0 w-full h-full object-contain"
+                    className="w-[98%] h-[98%] object-contain"
                     controls
                   />
                 )}
