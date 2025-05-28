@@ -1,0 +1,185 @@
+export interface DashScopeMessage {
+  role: 'user' | 'assistant';
+  content: string;
+}
+
+export interface DashScopeRequest {
+  prompt: string;
+  stream?: boolean;
+  incremental_output?: boolean;
+  has_thoughts?: boolean;
+  memory_id?: string;
+  messages?: DashScopeMessage[];
+}
+
+export interface DashScopeResponse {
+  output: {
+    text?: string;
+    thoughts?: Array<{
+      action_type: string;
+      thought: string;
+    }>;
+  };
+  status_code: number;
+  request_id: string;
+  message?: string;
+}
+
+export class DashScopeAPI {
+  private apiKey: string;
+  private appId: string;
+  private baseUrl: string = 'https://dashscope.aliyuncs.com/api/v1/apps';
+
+  constructor(apiKey: string, appId: string) {
+    this.apiKey = apiKey;
+    this.appId = appId;
+  }
+
+  async callApplication(request: DashScopeRequest): Promise<DashScopeResponse> {
+    const requestBody = {
+      input: {
+        prompt: request.prompt,
+        messages: request.messages,
+      },
+      parameters: {
+        stream: request.stream || false,
+        incremental_output: request.incremental_output || false,
+        has_thoughts: request.has_thoughts || false,
+      },
+      debug: {},
+      ...(request.memory_id && { memory_id: request.memory_id }),
+    };
+
+    const response = await fetch(`${this.baseUrl}/${this.appId}/completion`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${this.apiKey}`,
+        'X-DashScope-SSE': request.stream ? 'enable' : 'disable',
+      },
+      body: JSON.stringify(requestBody),
+    });
+
+    if (!response.ok) {
+      throw new Error(`DashScope API error: ${response.status} ${response.statusText}`);
+    }
+
+    const result = await response.json();
+    return result;
+  }
+
+  async *callApplicationStream(request: DashScopeRequest): AsyncGenerator<DashScopeResponse> {
+    const requestBody = {
+      input: {
+        prompt: request.prompt,
+        messages: request.messages,
+      },
+      parameters: {
+        stream: true,
+        incremental_output: request.incremental_output || true,
+        has_thoughts: request.has_thoughts || false,
+      },
+      debug: {},
+      ...(request.memory_id && { memory_id: request.memory_id }),
+    };
+
+    const response = await fetch(`${this.baseUrl}/${this.appId}/completion`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${this.apiKey}`,
+        'X-DashScope-SSE': 'enable',
+        'Accept': 'text/event-stream',
+      },
+      body: JSON.stringify(requestBody),
+    });
+
+    if (!response.ok) {
+      throw new Error(`DashScope API error: ${response.status} ${response.statusText}`);
+    }
+
+    const reader = response.body?.getReader();
+    if (!reader) {
+      throw new Error('No response body');
+    }
+
+    const decoder = new TextDecoder();
+    let buffer = '';
+    let totalBytesRead = 0;
+
+    try {
+      while (true) {
+        const { done, value } = await reader.read();
+        
+        if (done) {
+          break;
+        }
+
+        totalBytesRead += value.length;
+        const chunk = decoder.decode(value, { stream: true });
+        buffer += chunk;
+        
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || '';
+
+        for (const line of lines) {
+          if (line.startsWith('data:')) {
+            const data = line.slice(5);
+            
+            if (data === '[DONE]') {
+              return;
+            }
+            
+            try {
+              const parsed = JSON.parse(data);
+              
+              const transformedChunk: DashScopeResponse = {
+                output: {
+                  text: parsed.output?.text || '',
+                  thoughts: parsed.output?.thoughts || []
+                },
+                status_code: 200,
+                request_id: parsed.request_id || '',
+                message: ''
+              };
+              
+              yield transformedChunk;
+            } catch (e) {
+            }
+          }
+        }
+      }
+    } finally {
+      reader.releaseLock();
+    }
+  }
+}
+
+export function formatCourseReferences(courseRefs?: Array<{
+  courseName: string;
+  content: string;
+  type?: string;
+}>): string {
+  if (!courseRefs?.length) return '';
+  
+  const contextStr = courseRefs.map(ref => 
+    `参考课程：${ref.courseName} - ${ref.content}`
+  ).join('\n');
+  
+  return `\n\n[课程上下文]\n${contextStr}\n\n`;
+}
+
+export function createDashScopeAPI() {
+  const apiKey = process.env.DASHSCOPE_API_KEY;
+  const appId = process.env.DASHSCOPE_APP_ID;
+
+  if (!apiKey) {
+    throw new Error('DASHSCOPE_API_KEY environment variable is required');
+  }
+  
+  if (!appId) {
+    throw new Error('DASHSCOPE_APP_ID environment variable is required');
+  }
+
+  return new DashScopeAPI(apiKey, appId);
+} 
