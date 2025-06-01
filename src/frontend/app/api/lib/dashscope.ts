@@ -184,15 +184,45 @@ export class DashScopeAPI {
 }
 
 export function formatCourseReferences(courseRefs?: Array<{
-  courseName: string;
-  content: string;
+  courseName?: string;
+  content?: string;
   type?: string;
+  referenceLevel: 'course' | 'module' | 'content' | 'special';
+  specialType?: 'learning-tracking' | 'quiz' | 'community';
+  moduleName?: string;
+  contentType?: 'lecture' | 'assignment' | 'resource' | 'quiz';
+  contentName?: string;
 }>): string {
   if (!courseRefs?.length) return '';
   
-  const contextStr = courseRefs.map(ref => 
-    `参考课程：${ref.courseName} - ${ref.content}`
-  ).join('\n');
+  const contextStr = courseRefs.map(ref => {
+    if (ref.referenceLevel === 'special') {
+      switch (ref.specialType) {
+        case 'learning-tracking':
+          return '参考功能：智能学习跟踪 - 用于跟踪学习进度、分析学习效果和提供个性化建议';
+        case 'quiz':
+          return '参考功能：智能测验 - 用于生成练习题、评估知识掌握程度和提供答案解析';
+        case 'community':
+          return '参考功能：学习社区 - 用于查看讨论话题、参与学习交流和分享学习心得';
+        default:
+          return '';
+      }
+    } else if (ref.referenceLevel === 'course') {
+      return `参考课程：${ref.courseName}（整个课程）`;
+    } else if (ref.referenceLevel === 'module') {
+      return `参考课程：${ref.courseName} - ${ref.moduleName}（整个模块）`;
+    } else if (ref.referenceLevel === 'content') {
+      const typeMap = {
+        'lecture': '课件',
+        'assignment': '作业',
+        'resource': '资源',
+        'quiz': '堂测'
+      };
+      const typeZh = typeMap[ref.contentType || 'lecture'];
+      return `参考课程：${ref.courseName} - ${typeZh}：${ref.contentName}`;
+    }
+    return '';
+  }).filter(Boolean).join('\n');
   
   return `\n\n[课程上下文]\n${contextStr}\n\n`;
 }

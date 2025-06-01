@@ -17,13 +17,15 @@ export interface ChatMessage {
 }
 
 export interface CourseReference {
-  courseId: string;
-  courseName: string;
-  moduleId: string;
-  moduleName: string;
-  contentType: 'lecture' | 'assignment' | 'resource';
+  courseId?: string;
+  courseName?: string;
+  moduleId?: string;
+  moduleName?: string;
+  contentType?: 'lecture' | 'assignment' | 'resource' | 'quiz';
   contentName?: string;
   content?: string; // 用于API传递的内容
+  referenceLevel: 'course' | 'module' | 'content' | 'special';
+  specialType?: 'learning-tracking' | 'quiz' | 'community';
 }
 
 // 文档引用类型（来自DashScope API）

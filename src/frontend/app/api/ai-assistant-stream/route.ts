@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
             has_thoughts: true,
             enable_system_time: true,
             rag_options: {
-              pipeline_ids: [process.env.DASHSCOPE_PIPELINE_ID || "gqhpyjb6l1"],  // 从环境变量读取或使用默认值
+              pipeline_ids: (process.env.DASHSCOPE_PIPELINE_ID || "gqhpyjb6l1").split(',').map(id => id.trim()),
             },
           })) {
             chunkCount++;

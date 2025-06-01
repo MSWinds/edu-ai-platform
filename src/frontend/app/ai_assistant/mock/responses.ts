@@ -15,7 +15,50 @@ export const getMockResponse = (courseRefs?: CourseReference[]): MockResponse =>
 
   const ref = courseRefs[0]; // 取第一个引用
 
-  // 根据不同的内容类型返回不同的回答
+  // 处理特殊功能引用
+  if (ref.referenceLevel === 'special') {
+    switch (ref.specialType) {
+      case 'learning-tracking':
+        return {
+          content: `关于智能学习跟踪功能，我可以帮你：
+1. 查看学习进度和完成情况
+2. 分析学习效果和薄弱环节
+3. 提供个性化的学习建议
+
+你想了解哪个方面？`,
+          courseRefs
+        };
+
+      case 'quiz':
+        return {
+          content: `关于智能测验功能，我可以帮你：
+1. 生成针对性的练习题
+2. 评估你的知识掌握程度
+3. 提供详细的答案解析
+
+需要我为你生成一些练习题吗？`,
+          courseRefs
+        };
+
+      case 'community':
+        return {
+          content: `关于学习社区功能，我可以帮你：
+1. 查看最新的讨论话题
+2. 参与学习交流
+3. 分享学习心得
+
+你想了解哪个方面？`,
+          courseRefs
+        };
+
+      default:
+        return {
+          content: "抱歉，我不太理解这个特殊功能。请尝试重新选择或使用@引用具体的课程内容。"
+        };
+    }
+  }
+
+  // 处理课程内容引用
   switch (ref.contentType) {
     case 'lecture':
       return {
@@ -47,6 +90,17 @@ export const getMockResponse = (courseRefs?: CourseReference[]): MockResponse =>
 3. 最佳实践案例
 
 你想了解哪个部分？`,
+        courseRefs
+      };
+
+    case 'quiz':
+      return {
+        content: `关于${ref.contentName}，这是一个重要的测验。建议你：
+1. 仔细阅读题目要求
+2. 回顾相关知识点
+3. 注意答题时间
+
+需要我为你解释某个题目吗？`,
         courseRefs
       };
 

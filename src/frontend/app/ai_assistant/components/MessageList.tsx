@@ -135,19 +135,31 @@ export function MessageList({ messages, onRetry }: MessageListProps) {
           {/* 课程引用（原有功能保留） */}
           {message.courseReferences && message.courseReferences.length > 0 && (
             <div className="mt-3 text-xs text-gray-600">
-              <div className="font-medium mb-1">📚 引用的课程内容:</div>
+              <div className="font-medium mb-1">📚 引用的内容:</div>
               <div className="flex flex-wrap gap-1">
-                {message.courseReferences.map((ref, index) => (
-                  <span 
-                    key={index} 
-                    className="px-2 py-1 bg-blue-100 text-blue-800 rounded-md border"
-                  >
-                    {ref.courseName} - {ref.moduleName}
-                    {ref.contentType && (
-                      <span className="ml-1 text-blue-600">({ref.contentType})</span>
-                    )}
-                  </span>
-                ))}
+                {message.courseReferences.map((ref, index) => {
+                  let label = '';
+                  if (ref.referenceLevel === 'special') {
+                    if (ref.specialType === 'learning-tracking') label = '智能学习跟踪';
+                    else if (ref.specialType === 'quiz') label = '智能测验';
+                    else if (ref.specialType === 'community') label = '学习社区';
+                  } else if (ref.referenceLevel === 'course') {
+                    label = `${ref.courseName}（整个课程）`;
+                  } else if (ref.referenceLevel === 'module') {
+                    label = `${ref.courseName} - ${ref.moduleName}（整个模块）`;
+                  } else if (ref.referenceLevel === 'content') {
+                    let typeZh = ref.contentType === 'lecture' ? '课件' : ref.contentType === 'assignment' ? '作业' : '资源';
+                    label = `${typeZh}: ${ref.contentName}`;
+                  }
+                  return (
+                    <span 
+                      key={index} 
+                      className="px-2 py-1 bg-blue-100 text-blue-800 rounded-md border"
+                    >
+                      {label}
+                    </span>
+                  );
+                })}
               </div>
             </div>
           )}
