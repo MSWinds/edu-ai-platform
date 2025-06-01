@@ -3,7 +3,7 @@ import type { ChatMessage, CourseReference, AIAssistantRequest, StreamChunk, Doc
 import { getUser } from '../../login/auth';
 
 // 更新StreamChunk类型定义
-interface ExtendedStreamChunk extends StreamChunk {
+interface ExtendedStreamChunk extends Omit<StreamChunk, 'type'> {
   type: 'text' | 'thought' | 'error' | 'metadata';
   doc_references?: DocReference[];
   model?: string;
