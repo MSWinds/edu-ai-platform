@@ -5,11 +5,14 @@ import { mockUserData } from "../../../mockdata/courseData";
 import { useState } from "react";
 import VideoPlayerPopup from "./components/VideoPlayerPopup";
 import ExercisePopup from "./components/ExercisePopup";
+import AudioPlayerPopup from "./components/AudioPlayerPopup";
 
 export default function UnitsPage() {
   const [isVideoPlayerOpen, setIsVideoPlayerOpen] = useState(false);
   const [isExercisePopupOpen, setIsExercisePopupOpen] = useState(false);
+  const [isAudioPlayerOpen, setIsAudioPlayerOpen] = useState(false);
   const [currentExerciseWeek, setCurrentExerciseWeek] = useState<number | null>(null);
+  const [currentAudio, setCurrentAudio] = useState<{title: string, url: string, duration?: string} | null>(null);
   const [expandedWeeks, setExpandedWeeks] = useState<number[]>([7]); // 默认展开第7周
   const week7 = mockUserData.course.weeks[6]; // Week 7 is at index 6
 
@@ -33,6 +36,16 @@ export default function UnitsPage() {
 
   const handleOpenExerciseFromVideo = () => {
     handleOpenExercise(7); // 从视频内容进入第7周课堂练习
+  };
+
+  const handleOpenAudio = (title: string, url: string, duration?: string) => {
+    setCurrentAudio({ title, url, duration });
+    setIsAudioPlayerOpen(true);
+  };
+
+  const handleCloseAudio = () => {
+    setIsAudioPlayerOpen(false);
+    setCurrentAudio(null);
   };
 
   return (
@@ -147,12 +160,34 @@ export default function UnitsPage() {
                               {week.resources.map(res => (
                                 <li key={res.id} className="flex items-center justify-between text-base bg-white rounded px-4 py-2">
                                   <span>{res.title}</span>
-                                  <button 
-                                    onClick={(e) => e.stopPropagation()}
-                                    className="px-3 py-1 rounded bg-green-50 text-green-700 text-sm font-medium hover:bg-green-100 transition"
-                                  >
-                                    下载
-                                  </button>
+                                  <div className="flex items-center gap-2">
+                                    {res.type === 'audio' ? (
+                                      <>
+                                        <button 
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleOpenAudio(res.title, res.url, (res as any).duration);
+                                          }}
+                                          className="px-3 py-1 rounded bg-blue-50 text-blue-600 text-sm font-medium hover:bg-blue-100 transition"
+                                        >
+                                          播放
+                                        </button>
+                                        <button 
+                                          onClick={(e) => e.stopPropagation()}
+                                          className="px-3 py-1 rounded bg-green-50 text-green-700 text-sm font-medium hover:bg-green-100 transition"
+                                        >
+                                          下载
+                                        </button>
+                                      </>
+                                    ) : (
+                                      <button 
+                                        onClick={(e) => e.stopPropagation()}
+                                        className="px-3 py-1 rounded bg-green-50 text-green-700 text-sm font-medium hover:bg-green-100 transition"
+                                      >
+                                        下载
+                                      </button>
+                                    )}
+                                  </div>
                                 </li>
                               ))}
                             </ul>
@@ -185,6 +220,17 @@ export default function UnitsPage() {
           onClose={handleCloseExercise}
           weekNumber={currentExerciseWeek}
           exerciseTitle={mockUserData.course.weeks.find(w => w.weekNumber === currentExerciseWeek)?.quiz?.title || "课堂练习"}
+        />
+      )}
+
+      {/* Audio Player Popup */}
+      {currentAudio && (
+        <AudioPlayerPopup
+          isOpen={isAudioPlayerOpen}
+          onClose={handleCloseAudio}
+          title={currentAudio.title}
+          audioUrl={currentAudio.url}
+          duration={currentAudio.duration}
         />
       )}
     </div>
