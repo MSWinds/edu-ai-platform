@@ -17,9 +17,10 @@ interface VideoPlayerPopupProps {
   isOpen: boolean;
   onClose: () => void;
   sections: Section[];
+  onOpenExercise?: () => void;
 }
 
-export default function VideoPlayerPopup({ isOpen, onClose, sections }: VideoPlayerPopupProps) {
+export default function VideoPlayerPopup({ isOpen, onClose, sections, onOpenExercise }: VideoPlayerPopupProps) {
   const [currentSectionIndex, setCurrentSectionIndex] = useState(0);
   const [quizStarted, setQuizStarted] = useState(false);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
@@ -84,6 +85,12 @@ export default function VideoPlayerPopup({ isOpen, onClose, sections }: VideoPla
   const handleCloseCompletionDialog = () => {
     setShowCompletionDialog(false);
     onClose();
+  };
+
+  const handleOpenExercise = () => {
+    setShowCompletionDialog(false);
+    onClose();
+    onOpenExercise?.();
   };
 
   return (
@@ -269,7 +276,7 @@ export default function VideoPlayerPopup({ isOpen, onClose, sections }: VideoPla
             </p>
             <div className="flex justify-center">
               <button
-                onClick={handleCloseCompletionDialog}
+                onClick={handleOpenExercise}
                 className="px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-lg font-medium"
               >
                 进入本周练习

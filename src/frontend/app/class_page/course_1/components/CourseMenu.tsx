@@ -36,4 +36,3 @@ export function CourseMenu() {
   );
 }
 
-// 需要在 _app 或 layout 里引入 Google Material Symbols 字体，或用现有 icon 组件替换 
