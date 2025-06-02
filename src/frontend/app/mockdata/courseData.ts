@@ -222,7 +222,7 @@ export const mockUserData: UserData = {
         resources: [
           { id: 13, title: '提示词工程最佳实践', type: 'pdf', url: '#' },
           { id: 14, title: '提示词模板库', type: 'doc', url: '#' },
-          { id: 15, title: '提示词工程基础与进阶技巧 - AI播客', type: 'audio', url: '/audio/提示词工程基础与进阶技巧-[20p].wav', duration: '20:00' }
+          { id: 15, title: '提示词工程基础与进阶技巧 - AI播客', type: 'audio', url: '/audio/prompt-engineering-podcast.wav', duration: '20:00' }
         ],
         sections: [
           {

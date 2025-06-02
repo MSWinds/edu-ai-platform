@@ -22,18 +22,20 @@ export default function AudioPlayerPopup({ isOpen, onClose, title, audioUrl, dur
     if (!audio) return;
 
     const updateTime = () => setCurrentTime(audio.currentTime);
-    const updateDuration = () => setTotalDuration(audio.duration);
+    const handleEnded = () => setIsPlaying(false);
 
     audio.addEventListener('timeupdate', updateTime);
-    audio.addEventListener('loadedmetadata', updateDuration);
-    audio.addEventListener('ended', () => setIsPlaying(false));
+    audio.addEventListener('ended', handleEnded);
+
+    // Log initial audio state
+    console.log('Audio URL:', audioUrl);
+    console.log('Initial audio readyState:', audio.readyState);
 
     return () => {
       audio.removeEventListener('timeupdate', updateTime);
-      audio.removeEventListener('loadedmetadata', updateDuration);
-      audio.removeEventListener('ended', () => setIsPlaying(false));
+      audio.removeEventListener('ended', handleEnded);
     };
-  }, []);
+  }, [audioUrl]);
 
   const togglePlayPause = () => {
     const audio = audioRef.current;
@@ -42,7 +44,9 @@ export default function AudioPlayerPopup({ isOpen, onClose, title, audioUrl, dur
     if (isPlaying) {
       audio.pause();
     } else {
-      audio.play();
+      audio.play().catch(error => {
+        console.error('Error playing audio:', error);
+      });
     }
     setIsPlaying(!isPlaying);
   };
@@ -126,7 +130,27 @@ export default function AudioPlayerPopup({ isOpen, onClose, title, audioUrl, dur
               </div>
 
               {/* Audio element */}
-              <audio ref={audioRef} src={audioUrl} preload="metadata" />
+              <audio 
+                ref={audioRef} 
+                src={audioUrl} 
+                onLoadedMetadata={() => {
+                  const audio = audioRef.current;
+                  if (audio) {
+                    console.log('Audio metadata loaded, duration:', audio.duration);
+                    setTotalDuration(audio.duration);
+                  }
+                }}
+                onError={(e) => {
+                  console.error('Audio element error:', e);
+                  const audio = e.target as HTMLAudioElement;
+                  console.error('Audio error details:', {
+                    error: audio.error,
+                    networkState: audio.networkState,
+                    readyState: audio.readyState,
+                    src: audio.src
+                  });
+                }}
+              />
 
               {/* Play/Pause button */}
               <button
