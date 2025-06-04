@@ -15,9 +15,15 @@ async function testStreamAPI() {
     }),
   });
 
+  if (!response.ok) {
+    console.error(`Request failed with status ${response.status} ${response.statusText}`);
+    process.exit(1);
+  }
+
   const reader = response.body;
   const decoder = new TextDecoder();
   let buffer = '';
+  let hasDataChunk = false;
   
   for await (const chunk of reader) {
     buffer += decoder.decode(chunk, { stream: true });
@@ -29,8 +35,14 @@ async function testStreamAPI() {
       if (line.startsWith('data: ')) {
         const data = line.slice(6);
         if (data === '[DONE]') {
+          if (!hasDataChunk) {
+            console.error('No data chunks received before [DONE]');
+            process.exit(1);
+          }
           console.log('=== 流结束 ===');
           return;
+        } else {
+          hasDataChunk = true;
         }
         
         try {
@@ -44,4 +56,4 @@ async function testStreamAPI() {
   }
 }
 
-testStreamAPI().catch(console.error); 
+testStreamAPI().catch(console.error);
