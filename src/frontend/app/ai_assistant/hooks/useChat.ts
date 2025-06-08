@@ -44,9 +44,7 @@ export function useChat() {
       throw new Error(data.error);
     }
 
-    // 添加调试日志
-    console.log('🔍 API返回的原始数据:', data);
-    console.log('🔍 文档引用数据:', data.doc_references);
+
 
     return {
       content: data.content,
@@ -106,7 +104,6 @@ export function useChat() {
             try {
               const chunk: ExtendedStreamChunk = JSON.parse(data);
               chunkCount++;
-              console.log(`🌊 收到流式chunk #${chunkCount}:`, chunk);
               onChunk(chunk);
             } catch (e) {
               console.warn('⚠️ 解析SSE数据失败:', data, e);
@@ -204,7 +201,6 @@ export function useChat() {
             );
           } else if (chunk.type === 'metadata') {
             // 保存元数据
-            console.log('📦 收到metadata chunk:', chunk);
             docReferences = chunk.doc_references;
             model = chunk.model;
             usage = chunk.usage;
@@ -212,7 +208,6 @@ export function useChat() {
         });
 
         // 完成流式响应，更新文档引用和元数据
-        console.log('✅ 流式响应完成，文档引用:', docReferences);
         const responseTime = Date.now() - startTime;
         setMessages(prev => 
           prev.map(msg => 

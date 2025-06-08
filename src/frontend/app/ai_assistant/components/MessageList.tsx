@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react';
 import { ChatMessage } from '../types/chat';
 import { ExclamationTriangleIcon, ArrowPathIcon } from '@heroicons/react/24/outline';
-import { MessageContent } from './MessageContent';
-import { MessageReferences } from './MessageReferences';
+import { StreamingMessageContent } from './StreamingMessageContent';
+import { SourcesCollapse } from './SourcesCollapse';
 import Image from 'next/image';
 
 interface MessageListProps {
@@ -112,13 +112,11 @@ export function MessageList({ messages, onRetry }: MessageListProps) {
             ) : (
               <div className="prose prose-sm max-w-none dark:prose-invert">
                 <div className="whitespace-pre-wrap break-words">
-                  <MessageContent 
+                  <StreamingMessageContent 
                     content={message.content} 
                     docReferences={message.docReferences}
+                    isStreaming={message.isStreaming}
                   />
-                  {message.isStreaming && (
-                    <span className="inline-block w-2 h-5 bg-gray-400 animate-pulse ml-1"></span>
-                  )}
                 </div>
               </div>
             )}
@@ -126,7 +124,7 @@ export function MessageList({ messages, onRetry }: MessageListProps) {
           
           {/* 文档引用列表 */}
           {message.role === 'assistant' && !message.error && (
-            <MessageReferences 
+            <SourcesCollapse 
               references={message.docReferences} 
               content={message.content}
             />

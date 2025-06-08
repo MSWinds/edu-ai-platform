@@ -9,6 +9,11 @@ export async function POST(request: NextRequest) {
       prompt: testMessage || '请结合知识库内容回答：什么是人工智能？',
       stream: false,
       memory_id: memoryId,
+      has_thoughts: true,
+      enable_system_time: true,
+      rag_options: {
+        pipeline_ids: (process.env.DASHSCOPE_PIPELINE_ID || "9z00mkhmz1").split(',').map(id => id.trim()),
+      },
     });
     // 返回完整原始响应，便于分析
     return NextResponse.json({

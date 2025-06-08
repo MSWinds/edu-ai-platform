@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
             has_thoughts: true,
             enable_system_time: true,
             rag_options: {
-              pipeline_ids: (process.env.DASHSCOPE_PIPELINE_ID || "gqhpyjb6l1").split(',').map(id => id.trim()),
+              pipeline_ids: (process.env.DASHSCOPE_PIPELINE_ID || "9z00mkhmz1").split(',').map(id => id.trim()),
             },
           })) {
             chunkCount++;
@@ -62,7 +62,6 @@ export async function POST(request: NextRequest) {
 
             // 保存文档引用和元数据（通常在最后一个chunk中）
             if (chunk.output?.doc_references) {
-              console.log('🔥 服务端收到doc_references:', chunk.output.doc_references);
               docReferences = chunk.output.doc_references;
             }
             if (chunk.usage?.models?.[0]) {
@@ -107,7 +106,6 @@ export async function POST(request: NextRequest) {
           }
 
           // 发送文档引用和元数据
-          console.log('📤 准备发送metadata, docReferences:', docReferences);
           if (docReferences || modelInfo || usageInfo) {
             const metaData = {
               type: 'metadata',
@@ -116,7 +114,6 @@ export async function POST(request: NextRequest) {
               usage: usageInfo,
             };
             
-            console.log('📤 发送metadata:', JSON.stringify(metaData));
             controller.enqueue(
               encoder.encode(`data: ${JSON.stringify(metaData)}\n\n`)
             );
