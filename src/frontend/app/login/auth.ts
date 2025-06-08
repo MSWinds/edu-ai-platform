@@ -168,9 +168,9 @@ export function redirectIfAuthenticated(router: AppRouterInstance): boolean {
       console.log('已登录，重定向到仪表盘');
       // 根据用户角色重定向到相应页面
       if (user.role === 'teacher') {
-        router.push('/dashboard/teacher');
+        router.push('/teacher_dashboard');
       } else {
-        router.push('/dashboard');
+        router.push('/student_dashboard');
       }
       return true; // 表示重定向已发生
     }

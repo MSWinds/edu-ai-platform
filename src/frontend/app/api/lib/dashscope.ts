@@ -65,8 +65,8 @@ export class DashScopeAPI {
       },
       parameters: {
         stream: request.stream || false,
-        incremental_output: request.incremental_output || false,
-        has_thoughts: request.has_thoughts || true,
+        incremental_output: request.incremental_output ?? false,
+        has_thoughts: request.has_thoughts ?? true,
         enable_system_time: request.enable_system_time !== false,
         ...(request.rag_options && { rag_options: request.rag_options }),
       },
@@ -100,8 +100,8 @@ export class DashScopeAPI {
       },
       parameters: {
         stream: true,
-        incremental_output: request.incremental_output || true,
-        has_thoughts: request.has_thoughts || true,
+        incremental_output: request.incremental_output ?? false,
+        has_thoughts: request.has_thoughts ?? true,
         enable_system_time: request.enable_system_time !== false,
         ...(request.rag_options && { rag_options: request.rag_options }),
       },

@@ -15,7 +15,7 @@
 - **用户体验** - 加载状态、自动滚动、重试按钮
 
 ### 🎯 技术架构
-- **API层** - `/api/ai-assistant` 和 `/api/ai-assistant-stream`
+- **API层** - `/api/ai-assistant-stream`
 - **状态管理** - useChat hook 和 chatStore (Zustand)
 - **组件设计** - MessageList, ChatInput, CourseSelector
 - **类型安全** - 完整的TypeScript类型定义
@@ -51,25 +51,13 @@ npm run dev
 
 ## 🔄 API接口说明
 
-### 基础对话 API
-```
-POST /api/ai-assistant
-Content-Type: application/json
-
-{
-  "message": "用户问题",
-  "courseReferences": [/* 课程引用 */],
-  "memoryId": "memory-id" // 可选
-}
-```
-
-### 流式对话 API
+### 对话 API
 ```
 POST /api/ai-assistant-stream
 Content-Type: application/json
 
 {
-  "message": "用户问题", 
+  "message": "用户问题",
   "courseReferences": [/* 课程引用 */],
   "memoryId": "memory-id" // 可选
 }
