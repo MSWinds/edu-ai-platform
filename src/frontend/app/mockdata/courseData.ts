@@ -74,7 +74,7 @@ export const mockCourseData = {
   id: 1,
   title: '《人工智能基础导论：AI跨学科工具化思维、伦理设计与应用创想》',
   description: '全面介绍AI基础技术、工具与跨界应用',
-  totalWeeks: 12,
+  totalWeeks: 14,
   instructor: '李教授',
   image: '/images/course-ai.jpg'
 };
@@ -418,6 +418,36 @@ export const mockUserData: UserData = {
           { id: 123, title: 'AI伦理与创新作业', completed: false },
         ],
         quiz: { id: 212, title: '伦理与创新, 课堂知识测验', completed: false, dueDate: '2023-12-31' },
+        resources: []
+      },
+      {
+        weekNumber: 13,
+        title: '复习',
+        completed: false,
+        progress: 0,
+        summary: '本周进入综合复习阶段：教师将归纳本学期核心概念与典型案例，梳理大模型原理、提示词设计、跨学科应用等关键知识点。同学们可根据个人兴趣或职业方向，自主选择之前的案例进行回顾与讨论，并完成模拟测验，为期末考试打好基础。',
+        videos: [
+          { id: 324, title: '期末复习要点与答题策略', duration: '30:00', completed: false }
+        ],
+        assignments: [
+          { id: 124, title: '整理个人复习笔记并提交思维导图', completed: false },
+        ],
+        quiz: { id: 213, title: '期末模拟测试', completed: false, dueDate: '2023-12-31' },
+        resources: []
+      },
+      {
+        weekNumber: 14,
+        title: '期末考试',
+        completed: false,
+        progress: 0,
+        summary: '本周进行期末考核：涵盖大模型基础、行业应用分析与实操技能。考试形式为线上闭卷测验与案例分析，重点考察对课程知识的综合运用能力。请同学按学校考试安排准时参加，并注意诚信应考。',
+        videos: [
+          { id: 325, title: '参加期末线上考试', duration: '45:15', completed: false }
+        ],
+        assignments: [
+        
+        ],
+        quiz: { id: 211, title: '大模型入门和应用-第六章节, 课堂知识测验', completed: false, dueDate: '2023-12-31' },
         resources: []
       }
     ]
