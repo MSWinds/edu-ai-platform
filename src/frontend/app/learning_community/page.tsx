@@ -5,6 +5,15 @@ import DashboardSidebar from '../main_sidebar/DashboardSidebar';
 import { colors } from '../theme/colors';
 import { mockCourseData } from '../mockdata/courseData';
 import { useRouter } from 'next/navigation';
+import { 
+  majorCategories, 
+  majorPreferences, 
+  studyLevels, 
+  collaborationTypes, 
+  getMajorById,
+  getRelatedMajors,
+  type Major 
+} from '../mockdata/majorData';
 
 interface Discussion {
   id: string;
@@ -34,10 +43,14 @@ interface StudyGroup {
   creator: string;
   members: string[];
   maxMembers: number;
-  tags: string[];
   meetingTime: string;
   createdAt: Date;
   isActive: boolean;
+  // 新增专业相关字段
+  targetMajors: string[];
+  majorPreference: keyof typeof majorPreferences;
+  studyLevel: keyof typeof studyLevels;
+  collaborationType: keyof typeof collaborationTypes;
 }
 
 // Mock discussions data
@@ -78,10 +91,13 @@ const mockStudyGroups: StudyGroup[] = [
     creator: '王小明',
     members: ['王小明', '李华', '张三'],
     maxMembers: 6,
-    tags: ['初学者友好', '作业互助', '线上讨论'],
     meetingTime: '每周三晚上8点',
     createdAt: new Date('2024-03-18T10:00:00'),
-    isActive: true
+    isActive: true,
+    targetMajors: ['computer_science', 'artificial_intelligence', 'software_engineering'],
+    majorPreference: 'related',
+    studyLevel: 'beginner',
+    collaborationType: 'homework'
   },
   {
     id: '2',
@@ -91,10 +107,13 @@ const mockStudyGroups: StudyGroup[] = [
     creator: '陈强',
     members: ['陈强', '刘洋', '赵敏', '孙雅文'],
     maxMembers: 5,
-    tags: ['项目导向', '需要基础', '实践为主'],
     meetingTime: '每周六下午2点',
     createdAt: new Date('2024-03-15T14:00:00'),
-    isActive: true
+    isActive: true,
+    targetMajors: ['artificial_intelligence', 'computer_science'],
+    majorPreference: 'same',
+    studyLevel: 'intermediate',
+    collaborationType: 'project'
   },
   {
     id: '3',
@@ -104,10 +123,13 @@ const mockStudyGroups: StudyGroup[] = [
     creator: '李晨',
     members: ['李晨', '王芳', '张伟', '林小雨', '周杰'],
     maxMembers: 8,
-    tags: ['早起打卡', '习惯养成', '相互监督'],
     meetingTime: '每天早上6:30-7:30',
     createdAt: new Date('2024-03-10T06:00:00'),
-    isActive: true
+    isActive: true,
+    targetMajors: [],
+    majorPreference: 'any',
+    studyLevel: 'beginner',
+    collaborationType: 'discussion'
   }
 ];
 
@@ -141,6 +163,9 @@ export default function LearningCommunity() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<'discussion' | 'study-buddy'>('discussion');
   const [selectedCourse, setSelectedCourse] = useState<string>('all');
+  const [selectedMajorFilter, setSelectedMajorFilter] = useState<string>('all');
+  const [majorPreferenceFilter, setMajorPreferenceFilter] = useState<string>('all');
+  const [studyLevelFilter, setStudyLevelFilter] = useState<string>('all');
   const [discussions, setDiscussions] = useState<Discussion[]>(mockDiscussions);
   const [studyGroups, setStudyGroups] = useState<StudyGroup[]>(mockStudyGroups);
   const [showNewDiscussion, setShowNewDiscussion] = useState(false);
@@ -155,15 +180,21 @@ export default function LearningCommunity() {
     title: string;
     description: string;
     maxMembers: string;
-    tags: string[];
     meetingTime: string;
+    targetMajors: string[];
+    majorPreference: keyof typeof majorPreferences;
+    studyLevel: keyof typeof studyLevels;
+    collaborationType: keyof typeof collaborationTypes;
   }>({ 
     courseId: '', 
     title: '', 
     description: '', 
     maxMembers: '6', 
-    tags: [],
-    meetingTime: ''
+    meetingTime: '',
+    targetMajors: [],
+    majorPreference: 'any',
+    studyLevel: 'beginner',
+    collaborationType: 'discussion'
   });
 
   const handleJoinGroup = (groupId: string) => {
@@ -176,16 +207,45 @@ export default function LearningCommunity() {
     );
   };
 
-  const handleTagToggle = (tag: string) => {
+
+
+  const handleMajorToggle = (majorId: string) => {
     setNewGroup(prev => ({
       ...prev,
-      tags: prev.tags.includes(tag) 
-        ? prev.tags.filter(t => t !== tag)
-        : [...prev.tags, tag]
+      targetMajors: prev.targetMajors.includes(majorId)
+        ? prev.targetMajors.filter(m => m !== majorId)
+        : [...prev.targetMajors, majorId]
     }));
   };
 
-  const commonTags = ['初学者友好', '作业互助', '项目导向', '线上讨论', '相互监督', '习惯养成', '考试复习', '实践为主'];
+  // 筛选学习小组
+  const filteredStudyGroups = studyGroups.filter(group => {
+    // 课程筛选
+    if (selectedCourse !== 'all' && group.courseId.toString() !== selectedCourse) {
+      return false;
+    }
+    
+    // 专业筛选
+    if (selectedMajorFilter !== 'all') {
+      if (!group.targetMajors.includes(selectedMajorFilter) && group.targetMajors.length > 0) {
+        return false;
+      }
+    }
+    
+    // 专业偏好筛选
+    if (majorPreferenceFilter !== 'all' && group.majorPreference !== majorPreferenceFilter) {
+      return false;
+    }
+    
+    // 学习水平筛选
+    if (studyLevelFilter !== 'all' && group.studyLevel !== studyLevelFilter) {
+      return false;
+    }
+    
+    return true;
+  });
+
+
 
   return (
     <DashboardSidebar>
@@ -307,8 +367,8 @@ export default function LearningCommunity() {
             <div 
               className="bg-white rounded-2xl shadow-2xl p-6 relative flex flex-col gap-4 my-auto overflow-auto"
               style={{ 
-                width: '600px',
-                minWidth: '600px', 
+                width: '700px',
+                minWidth: '700px', 
                 maxWidth: '90vw', 
                 maxHeight: '90vh',
               }}
@@ -322,11 +382,12 @@ export default function LearningCommunity() {
                 ×
               </button>
               <h2 className="text-lg font-bold mb-2 text-gray-900 text-center">创建学习小组</h2>
-              <div className="space-y-4">
+              <div className="space-y-6">
                 <div>
                   <label className="block mb-1 text-gray-700 text-sm">选择课程</label>
                   <select
                     className="w-full border rounded-lg px-3 py-2 text-sm"
+                    style={{borderColor: colors.border}}
                     value={newGroup.courseId}
                     onChange={e => setNewGroup(v => ({...v, courseId: e.target.value}))}
                   >
@@ -334,10 +395,87 @@ export default function LearningCommunity() {
                     <option value={mockCourseData.id.toString()}>{mockCourseData.title}</option>
                   </select>
                 </div>
+
+                {/* 专业选择区域 */}
+                <div>
+                  <label className="block mb-2 text-gray-700 text-sm font-medium">
+                    目标专业 <span className="text-gray-500">(选择希望加入的专业背景)</span>
+                  </label>
+                  
+                  <div className="space-y-4">
+                    {/* 专业类别快速选择 */}
+                    <div className="flex flex-wrap gap-2">
+                      {Object.entries(majorCategories).map(([categoryKey, category]) => (
+                        <button
+                          key={categoryKey}
+                          type="button"
+                          className="flex items-center space-x-2 px-3 py-2 rounded-lg border text-sm transition-colors hover:bg-gray-50"
+                          style={{borderColor: colors.border}}
+                          onClick={() => {
+                            const categoryMajorIds = category.majors.map(m => m.id);
+                            const hasAllSelected = categoryMajorIds.every(id => newGroup.targetMajors.includes(id));
+                            
+                            if (hasAllSelected) {
+                              // 取消选择该类别的所有专业
+                              setNewGroup(prev => ({
+                                ...prev,
+                                targetMajors: prev.targetMajors.filter(id => !categoryMajorIds.includes(id))
+                              }));
+                            } else {
+                              // 选择该类别的所有专业
+                              setNewGroup(prev => ({
+                                ...prev,
+                                targetMajors: Array.from(new Set([...prev.targetMajors, ...categoryMajorIds]))
+                              }));
+                            }
+                          }}
+                        >
+                          <span>{category.icon}</span>
+                          <span>{category.name}</span>
+                        </button>
+                      ))}
+                    </div>
+
+                    {/* 专业详细选择 */}
+                    <div className="grid grid-cols-2 gap-3 max-h-40 overflow-y-auto p-2 border rounded-lg bg-gray-50" style={{borderColor: colors.border}}>
+                      {Object.entries(majorCategories).map(([categoryKey, category]) => 
+                        category.majors.map(major => (
+                          <label
+                            key={major.id}
+                            className={`flex items-start space-x-3 p-3 rounded-lg border cursor-pointer transition-all hover:shadow-sm ${
+                              newGroup.targetMajors.includes(major.id)
+                                ? 'bg-white border-blue-300 shadow-sm'
+                                : 'bg-white border-gray-200 hover:border-gray-300'
+                            }`}
+                          >
+                            <input
+                              type="checkbox"
+                              checked={newGroup.targetMajors.includes(major.id)}
+                              onChange={() => handleMajorToggle(major.id)}
+                              className="mt-1 text-blue-600"
+                            />
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center space-x-2">
+                                <div 
+                                  className="w-3 h-3 rounded-full flex-shrink-0" 
+                                  style={{ backgroundColor: category.color }}
+                                />
+                                <span className="text-sm font-medium text-gray-900 truncate">{major.name}</span>
+                              </div>
+                              <p className="text-xs text-gray-500 mt-1 line-clamp-2">{major.description}</p>
+                              <div className="text-xs text-gray-400 mt-1">{category.name}</div>
+                            </div>
+                          </label>
+                        ))
+                      )}
+                    </div>
+                  </div>
+                </div>
                 <div>
                   <label className="block mb-1 text-gray-700 text-sm">小组名称</label>
                   <input
                     className="w-full border rounded-lg px-3 py-2 text-sm"
+                    style={{borderColor: colors.border}}
                     placeholder="请输入小组名称"
                     value={newGroup.title}
                     onChange={e => setNewGroup(v => ({...v, title: e.target.value}))}
@@ -347,16 +485,90 @@ export default function LearningCommunity() {
                   <label className="block mb-1 text-gray-700 text-sm">小组描述</label>
                   <textarea
                     className="w-full border rounded-lg px-3 py-2 min-h-[120px] text-sm"
+                    style={{borderColor: colors.border}}
                     placeholder="描述小组的学习目标、活动安排等..."
                     value={newGroup.description}
                     onChange={e => setNewGroup(v => ({...v, description: e.target.value}))}
                   />
                 </div>
+                {/* 专业偏好、学习水平、协作类型 */}
+                <div className="grid grid-cols-3 gap-4">
+                  <div>
+                    <label className="block mb-2 text-gray-700 text-sm font-medium">专业偏好</label>
+                    <div className="space-y-2">
+                      {Object.entries(majorPreferences).map(([key, pref]) => (
+                        <label key={key} className="flex items-center space-x-2 cursor-pointer">
+                          <input
+                            type="radio"
+                            name="majorPreference"
+                            value={key}
+                            checked={newGroup.majorPreference === key}
+                            onChange={e => setNewGroup(v => ({...v, majorPreference: e.target.value as keyof typeof majorPreferences}))}
+                            className="text-blue-600"
+                          />
+                          <div>
+                            <div className="text-sm font-medium text-gray-900">{pref.label}</div>
+                            <div className="text-xs text-gray-500">{pref.description}</div>
+                          </div>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <label className="block mb-2 text-gray-700 text-sm font-medium">学习水平</label>
+                    <div className="space-y-2">
+                      {Object.entries(studyLevels).map(([key, level]) => (
+                        <label key={key} className="flex items-center space-x-2 cursor-pointer">
+                          <input
+                            type="radio"
+                            name="studyLevel"
+                            value={key}
+                            checked={newGroup.studyLevel === key}
+                            onChange={e => setNewGroup(v => ({...v, studyLevel: e.target.value as keyof typeof studyLevels}))}
+                            className="text-blue-600"
+                          />
+                          <div>
+                            <div className="text-sm font-medium text-gray-900">{level.label}</div>
+                            <div className="text-xs text-gray-500">{level.description}</div>
+                          </div>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <label className="block mb-2 text-gray-700 text-sm font-medium">协作类型</label>
+                    <div className="space-y-2">
+                      {Object.entries(collaborationTypes).map(([key, type]) => (
+                        <label key={key} className="flex items-center space-x-2 cursor-pointer">
+                          <input
+                            type="radio"
+                            name="collaborationType"
+                            value={key}
+                            checked={newGroup.collaborationType === key}
+                            onChange={e => setNewGroup(v => ({...v, collaborationType: e.target.value as keyof typeof collaborationTypes}))}
+                            className="text-blue-600"
+                          />
+                          <div className="flex items-center space-x-2">
+                            <span>{type.icon}</span>
+                            <div>
+                              <div className="text-sm font-medium text-gray-900">{type.label}</div>
+                              <div className="text-xs text-gray-500">{type.description}</div>
+                            </div>
+                          </div>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block mb-1 text-gray-700 text-sm">最大人数</label>
                     <select
                       className="w-full border rounded-lg px-3 py-2 text-sm"
+                      style={{borderColor: colors.border}}
                       value={newGroup.maxMembers}
                       onChange={e => setNewGroup(v => ({...v, maxMembers: e.target.value}))}
                     >
@@ -370,41 +582,30 @@ export default function LearningCommunity() {
                     <label className="block mb-1 text-gray-700 text-sm">活动时间</label>
                     <input
                       className="w-full border rounded-lg px-3 py-2 text-sm"
+                      style={{borderColor: colors.border}}
                       placeholder="如：每周三晚8点"
                       value={newGroup.meetingTime}
                       onChange={e => setNewGroup(v => ({...v, meetingTime: e.target.value}))}
                     />
                   </div>
                 </div>
-                <div>
-                  <label className="block mb-2 text-gray-700 text-sm">标签</label>
-                  <div className="flex flex-wrap gap-2">
-                    {commonTags.map(tag => (
-                      <button
-                        key={tag}
-                        type="button"
-                        className={`px-3 py-1 rounded-full text-xs font-medium transition-colors border ${
-                          newGroup.tags.includes(tag)
-                            ? 'bg-blue-100 text-blue-700 border-blue-300'
-                            : 'bg-gray-100 text-gray-600 border-gray-300 hover:bg-gray-200'
-                        }`}
-                        onClick={() => handleTagToggle(tag)}
-                      >
-                        {tag}
-                      </button>
-                    ))}
-                  </div>
-                </div>
+
                 <div className="flex justify-between gap-2 mt-6">
                   <button
-                    className="px-4 py-1.5 rounded-lg text-gray-600 font-medium border border-gray-300 bg-gray-50 hover:bg-gray-100 transition"
+                    className="px-4 py-1.5 rounded-lg text-gray-600 font-medium border hover:bg-gray-100 transition"
+                    style={{borderColor: colors.border}}
                     onClick={() => setShowNewGroup(false)}
                   >
                     取消
                   </button>
                   <button
-                    className="px-5 py-1.5 rounded-lg text-white font-medium shadow text-sm bg-blue-600 hover:bg-blue-700 transition"
-                    onClick={() => setShowNewGroup(false)}
+                    className="px-5 py-1.5 rounded-lg text-white font-medium shadow text-sm transition"
+                    style={{background: colors.gradient.primary}}
+                    onClick={() => {
+                      // 这里可以添加创建小组的逻辑
+                      console.log('创建小组:', newGroup);
+                      setShowNewGroup(false);
+                    }}
                   >
                     创建小组
                   </button>
@@ -418,38 +619,128 @@ export default function LearningCommunity() {
         <div className="mx-auto max-w-7xl px-4 py-8">
           {/* 筛选和统计区域 */}
           <div className="bg-white rounded-2xl shadow-md border p-6 mb-6" style={{borderColor: colors.border}}>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-4">
-                <select
-                  className="rounded-lg border px-3 py-2 text-sm bg-white"
-                  style={{borderColor: colors.border, color: colors.text.primary}}
-                  value={selectedCourse}
-                  onChange={e => setSelectedCourse(e.target.value)}
-                >
-                  <option value="all">所有课程</option>
-                  <option value={mockCourseData.id.toString()}>{mockCourseData.title}</option>
-                </select>
-                <div className="text-sm text-gray-600">
-                  {activeTab === 'discussion' 
-                    ? `共 ${discussions.length} 个讨论`
-                    : `共 ${studyGroups.length} 个学习小组`
-                  }
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-4">
+                  <select
+                    className="rounded-lg border px-3 py-2 text-sm bg-white"
+                    style={{borderColor: colors.border, color: colors.text.primary}}
+                    value={selectedCourse}
+                    onChange={e => setSelectedCourse(e.target.value)}
+                  >
+                    <option value="all">所有课程</option>
+                    <option value={mockCourseData.id.toString()}>{mockCourseData.title}</option>
+                  </select>
+                  <div className="text-sm text-gray-600">
+                    {activeTab === 'discussion' 
+                      ? `共 ${discussions.length} 个讨论`
+                      : `共 ${filteredStudyGroups.length} 个学习小组`
+                    }
+                  </div>
                 </div>
+                {activeTab === 'discussion' && (
+                  <div className="flex items-center space-x-2 text-sm text-gray-600">
+                    <span>排序：</span>
+                    <button className="px-3 py-1 rounded-lg hover:bg-gray-100">最新发布</button>
+                    <button className="px-3 py-1 rounded-lg hover:bg-gray-100">最多回复</button>
+                    <button className="px-3 py-1 rounded-lg hover:bg-gray-100">最多浏览</button>
+                  </div>
+                )}
+                {activeTab === 'study-buddy' && (
+                  <div className="flex items-center space-x-2 text-sm text-gray-600">
+                    <span>筛选：</span>
+                    <button className="px-3 py-1 rounded-lg hover:bg-gray-100">可加入</button>
+                    <button className="px-3 py-1 rounded-lg hover:bg-gray-100">最新创建</button>
+                    <button className="px-3 py-1 rounded-lg hover:bg-gray-100">人数最少</button>
+                  </div>
+                )}
               </div>
-              {activeTab === 'discussion' && (
-                <div className="flex items-center space-x-2 text-sm text-gray-600">
-                  <span>排序：</span>
-                  <button className="px-3 py-1 rounded-lg hover:bg-gray-100">最新发布</button>
-                  <button className="px-3 py-1 rounded-lg hover:bg-gray-100">最多回复</button>
-                  <button className="px-3 py-1 rounded-lg hover:bg-gray-100">最多浏览</button>
-                </div>
-              )}
+
+              {/* 学习小组专业筛选 */}
               {activeTab === 'study-buddy' && (
-                <div className="flex items-center space-x-2 text-sm text-gray-600">
-                  <span>筛选：</span>
-                  <button className="px-3 py-1 rounded-lg hover:bg-gray-100">可加入</button>
-                  <button className="px-3 py-1 rounded-lg hover:bg-gray-100">最新创建</button>
-                  <button className="px-3 py-1 rounded-lg hover:bg-gray-100">人数最少</button>
+                <div className="space-y-3">
+                  <div className="flex items-center space-x-4">
+                    <select
+                      className="rounded-lg border px-3 py-2 text-sm bg-white"
+                      style={{borderColor: colors.border}}
+                      value={selectedMajorFilter}
+                      onChange={e => setSelectedMajorFilter(e.target.value)}
+                    >
+                      <option value="all">所有专业</option>
+                      {Object.entries(majorCategories).map(([categoryKey, category]) => (
+                        <optgroup key={categoryKey} label={category.name}>
+                          {category.majors.map(major => (
+                            <option key={major.id} value={major.id}>{major.name}</option>
+                          ))}
+                        </optgroup>
+                      ))}
+                    </select>
+
+                    <select
+                      className="rounded-lg border px-3 py-2 text-sm bg-white"
+                      style={{borderColor: colors.border}}
+                      value={majorPreferenceFilter}
+                      onChange={e => setMajorPreferenceFilter(e.target.value)}
+                    >
+                      <option value="all">所有偏好</option>
+                      {Object.entries(majorPreferences).map(([key, pref]) => (
+                        <option key={key} value={key}>{pref.label}</option>
+                      ))}
+                    </select>
+
+                    <select
+                      className="rounded-lg border px-3 py-2 text-sm bg-white"
+                      style={{borderColor: colors.border}}
+                      value={studyLevelFilter}
+                      onChange={e => setStudyLevelFilter(e.target.value)}
+                    >
+                      <option value="all">所有水平</option>
+                      {Object.entries(studyLevels).map(([key, level]) => (
+                        <option key={key} value={key}>{level.label}</option>
+                      ))}
+                    </select>
+
+                    <button
+                      className="px-4 py-2 text-sm text-gray-600 hover:text-gray-900 underline"
+                      onClick={() => {
+                        setSelectedMajorFilter('all');
+                        setMajorPreferenceFilter('all');
+                        setStudyLevelFilter('all');
+                      }}
+                    >
+                      清除筛选
+                    </button>
+                  </div>
+
+                  {/* 专业类别快速筛选 */}
+                  <div className="flex flex-wrap gap-2">
+                    {Object.entries(majorCategories).map(([categoryKey, category]) => (
+                      <button
+                        key={categoryKey}
+                        className={`flex items-center space-x-1 px-3 py-1 rounded-full text-xs font-medium transition-colors border ${
+                          selectedMajorFilter !== 'all' && category.majors.some(m => m.id === selectedMajorFilter)
+                            ? 'text-white border-transparent'
+                            : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'
+                        }`}
+                        style={{
+                          backgroundColor: selectedMajorFilter !== 'all' && category.majors.some(m => m.id === selectedMajorFilter) 
+                            ? category.color 
+                            : undefined
+                        }}
+                        onClick={() => {
+                          if (selectedMajorFilter !== 'all' && category.majors.some(m => m.id === selectedMajorFilter)) {
+                            setSelectedMajorFilter('all');
+                          } else {
+                            // 选择该类别的第一个专业作为示例
+                            setSelectedMajorFilter(category.majors[0].id);
+                          }
+                        }}
+                      >
+                        <span>{category.icon}</span>
+                        <span>{category.name}</span>
+                      </button>
+                    ))}
+                  </div>
                 </div>
               )}
             </div>
@@ -507,9 +798,7 @@ export default function LearningCommunity() {
           {/* 学习小组列表 */}
           {activeTab === 'study-buddy' && (
             <div className="space-y-4">
-              {studyGroups
-                .filter(g => selectedCourse === 'all' || g.courseId.toString() === selectedCourse)
-                .map(group => (
+              {filteredStudyGroups.map(group => (
                   <div
                     key={group.id}
                     className="bg-white rounded-2xl shadow-md border p-6 hover:shadow-lg transition-shadow"
@@ -550,16 +839,58 @@ export default function LearningCommunity() {
                           {group.description}
                         </div>
                         
-                        {/* 标签 */}
-                        <div className="flex flex-wrap gap-1 mb-3">
-                          {group.tags.map(tag => (
+                        {/* 专业和类型标签 */}
+                        <div className="space-y-2 mb-3">
+                          {/* 专业标签 */}
+                          {group.targetMajors.length > 0 && (
+                            <div className="flex flex-wrap gap-1">
+                              {group.targetMajors.slice(0, 3).map(majorId => {
+                                const majorInfo = getMajorById(majorId);
+                                return majorInfo ? (
+                                  <span
+                                    key={majorId}
+                                    className="px-2 py-1 text-xs rounded-full text-white font-medium"
+                                    style={{ backgroundColor: majorInfo.categoryColor }}
+                                  >
+                                    {majorInfo.name}
+                                  </span>
+                                ) : null;
+                              })}
+                              {group.targetMajors.length > 3 && (
+                                <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">
+                                  +{group.targetMajors.length - 3}
+                                </span>
+                              )}
+                            </div>
+                          )}
+                          
+                          {/* 其他标签 */}
+                          <div className="flex flex-wrap gap-1">
                             <span
-                              key={tag}
-                              className="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full"
+                              className="px-2 py-1 text-xs rounded-full font-medium"
+                              style={{ 
+                                backgroundColor: majorPreferences[group.majorPreference].color + '20',
+                                color: majorPreferences[group.majorPreference].color
+                              }}
                             >
-                              {tag}
+                              {majorPreferences[group.majorPreference].label}
                             </span>
-                          ))}
+                            <span
+                              className="px-2 py-1 text-xs rounded-full font-medium"
+                              style={{ 
+                                backgroundColor: studyLevels[group.studyLevel].color + '20',
+                                color: studyLevels[group.studyLevel].color
+                              }}
+                            >
+                              {studyLevels[group.studyLevel].label}
+                            </span>
+                            <span className="px-2 py-1 bg-purple-100 text-purple-700 text-xs rounded-full font-medium flex items-center space-x-1">
+                              <span>{collaborationTypes[group.collaborationType].icon}</span>
+                              <span>{collaborationTypes[group.collaborationType].label}</span>
+                            </span>
+                          </div>
+                          
+
                         </div>
                         
                         <div className="flex items-center justify-between text-sm">
@@ -597,7 +928,7 @@ export default function LearningCommunity() {
             </div>
           )}
 
-          {activeTab === 'study-buddy' && studyGroups.filter(g => selectedCourse === 'all' || g.courseId.toString() === selectedCourse).length === 0 && (
+          {activeTab === 'study-buddy' && filteredStudyGroups.length === 0 && (
             <div className="bg-white rounded-2xl shadow-md border p-12 text-center" style={{borderColor: colors.border}}>
               <div className="text-gray-400 mb-4">
                 <svg className="w-16 h-16 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
