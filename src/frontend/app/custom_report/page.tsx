@@ -15,13 +15,13 @@ const fakeReports: Record<number, Record<number, any>> = {
     1: {
       overallGrade: 'B+',
       overallScore: 84,
-      courseProgress: 15,
+      courseProgress: 7,
       attendanceRate: 92,
       skillMastery: {
-        '编程实践': 85,
-        '理论掌握': 72,
-        '项目应用': 65,
-        '团队协作': 78
+        'AI工具运用': 85,
+        '知识理解度': 72,
+        '学习投入度': 65,
+        '协作表现力': 78
       },
       classroom: {
         attendance: { status: '准时出席', level: 'good' },
@@ -45,13 +45,13 @@ const fakeReports: Record<number, Record<number, any>> = {
     2: {
       overallGrade: 'A-',
       overallScore: 88,
-      courseProgress: 30,
+      courseProgress: 14,
       attendanceRate: 95,
       skillMastery: {
-        '编程实践': 88,
-        '理论掌握': 85,
-        '项目应用': 75,
-        '团队协作': 92
+        'AI工具运用': 88,
+        '知识理解度': 85,
+        '学习投入度': 75,
+        '协作表现力': 92
       },
       classroom: {
         attendance: '全勤',
@@ -75,13 +75,13 @@ const fakeReports: Record<number, Record<number, any>> = {
     3: {
       overallGrade: 'A',
       overallScore: 92,
-      courseProgress: 45,
+      courseProgress: 21,
       attendanceRate: 100,
       skillMastery: {
-        '编程实践': 95,
-        '理论掌握': 88,
-        '项目应用': 85,
-        '团队协作': 90
+        'AI工具运用': 95,
+        '知识理解度': 88,
+        '学习投入度': 85,
+        '协作表现力': 90
       },
       classroom: {
         attendance: '准时到课',
@@ -105,13 +105,13 @@ const fakeReports: Record<number, Record<number, any>> = {
     4: {
       overallGrade: 'A-',
       overallScore: 89,
-      courseProgress: 60,
+      courseProgress: 25,
       attendanceRate: 98,
       skillMastery: {
-        '编程实践': 90,
-        '理论掌握': 82,
-        '项目应用': 88,
-        '团队协作': 95
+        'AI工具运用': 90,
+        '知识理解度': 82,
+        '学习投入度': 88,
+        '协作表现力': 95
       },
       classroom: {
         attendance: '全勤',
@@ -135,13 +135,13 @@ const fakeReports: Record<number, Record<number, any>> = {
     5: {
       overallGrade: 'A',
       overallScore: 94,
-      courseProgress: 75,
+      courseProgress: 32,
       attendanceRate: 100,
       skillMastery: {
-        '编程实践': 92,
-        '理论掌握': 90,
-        '项目应用': 95,
-        '团队协作': 98
+        'AI工具运用': 92,
+        '知识理解度': 90,
+        '学习投入度': 95,
+        '协作表现力': 98
       },
       classroom: {
         attendance: '准时出席',
@@ -165,13 +165,13 @@ const fakeReports: Record<number, Record<number, any>> = {
     6: {
       overallGrade: 'A+',
       overallScore: 96,
-      courseProgress: 90,
+      courseProgress: 39,
       attendanceRate: 100,
       skillMastery: {
-        '编程实践': 98,
-        '理论掌握': 92,
-        '项目应用': 95,
-        '团队协作': 100
+        'AI工具运用': 98,
+        '知识理解度': 92,
+        '学习投入度': 95,
+        '协作表现力': 100
       },
       classroom: {
         attendance: '全勤',
@@ -195,13 +195,13 @@ const fakeReports: Record<number, Record<number, any>> = {
     7: {
       overallGrade: 'A+',
       overallScore: 98,
-      courseProgress: 100,
+      courseProgress: 46,
       attendanceRate: 100,
       skillMastery: {
-        '编程实践': 100,
-        '理论掌握': 95,
-        '项目应用': 98,
-        '团队协作': 100
+        'AI工具运用': 100,
+        '知识理解度': 95,
+        '学习投入度': 98,
+        '协作表现力': 100
       },
       classroom: {
         attendance: { status: '准时出席', level: 'good' },
@@ -226,6 +226,53 @@ const fakeReports: Record<number, Record<number, any>> = {
 };
 
 const maxWeeks = 7;
+
+// 技能掌握度评判标准
+const skillCriteria = {
+  'AI工具运用': {
+    title: 'AI工具运用',
+    description: '评估使用AI工具的熟练程度',
+    criteria: [
+      '• AI工具使用频率和时长',
+      '• 提示词质量和效果',
+      '• AI对话成功率',
+      '• 工具切换熟练度',
+      '• 问题解决效率'
+    ]
+  },
+  '知识理解度': {
+    title: '知识理解度',
+    description: '评估对AI理论知识的掌握程度',
+    criteria: [
+      '• 课程内容完成度',
+      '• 小测验和堂测得分',
+      '• 知识点掌握情况',
+      '• 概念理解准确性',
+      '• 知识应用能力'
+    ]
+  },
+  '学习投入度': {
+    title: '学习投入度',
+    description: '评估的学习积极性和投入程度',
+    criteria: [
+      '• 学习时长统计',
+      '• 作业完成质量',
+      '• 课程参与度',
+      '• 自主学习行为',
+      '• 学习持续性'
+    ]
+  },
+  '协作表现力': {
+    title: '协作表现力',
+    description: '评估的团队合作和沟通能力',
+    criteria: [
+      '• 小组活动参与度',
+      '• 同伴互动频率',
+      '• 学习社区贡献度',
+      '• 协作效果评价'
+    ]
+  }
+};
 
 // 圆环进度图组件
 const CircularProgress = ({ percentage, size = 120, strokeWidth = 8, color = "#3B82F6", label, value }: {
@@ -275,15 +322,46 @@ const CircularProgress = ({ percentage, size = 120, strokeWidth = 8, color = "#3
 };
 
 // 进度条组件
-const ProgressBar = ({ label, percentage, color = "#3B82F6" }: {
+const ProgressBar = ({ label, percentage, color = "#3B82F6", showTooltip = false }: {
   label: string;
   percentage: number;
   color?: string;
+  showTooltip?: boolean;
 }) => {
+  const [showInfo, setShowInfo] = useState(false);
+  const criteria = skillCriteria[label as keyof typeof skillCriteria];
+
   return (
     <div className="mb-4">
       <div className="flex justify-between items-center mb-2">
-        <span className="text-sm font-medium text-gray-700">{label}</span>
+        <div className="flex items-center space-x-2">
+          <span className="text-sm font-medium text-gray-700">{label}</span>
+          {showTooltip && criteria && (
+            <div className="relative">
+              <button
+                onMouseEnter={() => setShowInfo(true)}
+                onMouseLeave={() => setShowInfo(false)}
+                className="text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </button>
+              {showInfo && (
+                <div className="absolute left-0 top-6 z-10 w-80 bg-white border border-gray-200 rounded-lg shadow-lg p-4">
+                  <h4 className="font-semibold text-gray-900 mb-2">{criteria.title}</h4>
+                  <p className="text-sm text-gray-600 mb-3">{criteria.description}</p>
+                  <div className="text-sm text-gray-700">
+                    <div className="font-medium mb-2">评判标准：</div>
+                    {criteria.criteria.map((item, index) => (
+                      <div key={index} className="mb-1">{item}</div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
         <span className="text-sm text-gray-500">{percentage}%</span>
       </div>
       <div className="w-full bg-gray-200 rounded-full h-3">
@@ -521,7 +599,7 @@ const CustomReportPage = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                   </svg>
                 </div>
-                <span>学生进度报告</span>
+                <span>智能学习跟踪系统</span>
               </h1>
               <p className="text-gray-600 mt-2 text-lg">数据驱动的个性化学习分析与进步跟踪</p>
             </div>
@@ -636,6 +714,9 @@ const CustomReportPage = () => {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                     </svg>
                     <span>技能掌握度</span>
+                    <div className="text-xs text-gray-500 ml-2 flex items-center">
+                      
+                    </div>
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {Object.entries(reportData.skillMastery).map(([skill, percentage]) => (
@@ -644,6 +725,7 @@ const CustomReportPage = () => {
                         label={skill}
                         percentage={percentage as number}
                         color="#3B82F6"
+                        showTooltip={true}
                       />
                     ))}
                   </div>
