@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { colors } from '../theme/colors';
 import DashboardSidebar from '../main_sidebar/DashboardSidebar';
+import PageHeader from '../components/PageHeader';
 
 interface Message {
   id: number;
@@ -168,18 +169,27 @@ export default function MessagesPage() {
     <DashboardSidebar>
       <div className="flex-1 bg-gray-50 h-screen flex flex-col">
         {/* 顶部栏 */}
-        <header className="bg-white border-b flex-shrink-0" style={{ borderColor: colors.border }}>
-          <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-            <h1 className="text-2xl font-bold" style={{ color: colors.text.primary }}>消息中心</h1>
-            <button
-              className="px-6 py-2 rounded-lg text-white font-medium shadow transition-colors"
-              style={{background: colors.gradient.primary}}
-              onClick={() => setShowNewMsg(true)}
-            >
-              新建消息
-            </button>
+        <div className="bg-white border-b flex-shrink-0" style={{ borderColor: colors.border }}>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <PageHeader
+              title="消息"
+              icon={
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8m-18 11h18a2 2 0 002-2V7a2 2 0 00-2-2H3a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+              }
+              actions={
+                <button
+                  className="px-6 py-2 rounded-lg text-white font-medium shadow transition-colors"
+                  style={{background: colors.gradient.primary}}
+                  onClick={() => setShowNewMsg(true)}
+                >
+                  新建消息
+                </button>
+              }
+            />
           </div>
-        </header>
+        </div>
 
         {/* 主内容区 */}
         <div className="flex-1 overflow-hidden">

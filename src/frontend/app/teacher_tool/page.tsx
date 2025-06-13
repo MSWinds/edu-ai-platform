@@ -3,6 +3,7 @@
 import React from "react";
 import DashboardSidebar from "../main_sidebar/DashboardSidebar";
 import { colors } from "../theme/colors";
+import PageHeader from "../components/PageHeader";
 
 const tools = [
   {
@@ -56,11 +57,18 @@ const TeacherTool = () => {
     <div className="flex h-screen bg-gray-100">
       <DashboardSidebar userRole="teacher" />
       <div className="flex-1 flex flex-col overflow-hidden">
-        <header className="bg-white shadow" style={{ borderBottom: `1px solid ${colors.border}` }}>
-          <div className="px-4 sm:px-6 lg:px-8 py-6">
-            <h1 className="text-2xl font-bold" style={{ color: colors.text.primary }}>AI 教学工具</h1>
+        <div className="bg-white shadow" style={{ borderBottom: `1px solid ${colors.border}` }}>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <PageHeader
+              title="AI智能建课"
+              icon={
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+              }
+            />
           </div>
-        </header>
+        </div>
         <main className="flex-1 overflow-y-auto p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {tools.map((tool) => (

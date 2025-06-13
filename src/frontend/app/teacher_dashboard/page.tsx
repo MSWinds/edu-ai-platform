@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import DashboardSidebar from "../main_sidebar/DashboardSidebar";
 import { colors } from "../theme/colors";
 import { mockUserData } from "../mockdata/courseData";
+import PageHeader from "../components/PageHeader";
 
 const TeacherDashboard = () => {
   // 假数据
@@ -20,20 +21,27 @@ const TeacherDashboard = () => {
     <div className="flex h-screen bg-gray-100">
       <DashboardSidebar userRole="teacher" />
       <div className="flex-1 flex flex-col overflow-hidden">
-        <header className="bg-white shadow" style={{ borderBottom: `1px solid ${colors.border}` }}>
-          <div className="max-w-[98%] mx-auto px-4 py-3">
-            <div className="flex justify-between items-center">
-              <h1 className="text-2xl font-bold" style={{ color: colors.text.primary }}>教师仪表盘</h1>
-              <div className="flex items-center space-x-3">
-                <span style={{ color: colors.text.secondary }}>欢迎回来，李老师</span>
-                <div className="w-9 h-9 rounded-full flex items-center justify-center text-white font-bold"
-                  style={{ background: `linear-gradient(to right, ${colors.primary}, ${colors.secondary})` }}>
-                  李
+        <div className="bg-white shadow" style={{ borderBottom: `1px solid ${colors.border}` }}>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <PageHeader
+              title="教师智能仪表"
+              icon={
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+              }
+              actions={
+                <div className="flex items-center space-x-3">
+                  <span style={{ color: colors.text.secondary }}>欢迎回来，李老师</span>
+                  <div className="w-9 h-9 rounded-full flex items-center justify-center text-white font-bold"
+                    style={{ background: `linear-gradient(to right, ${colors.primary}, ${colors.secondary})` }}>
+                    李
+                  </div>
                 </div>
-              </div>
-            </div>
+              }
+            />
           </div>
-        </header>
+        </div>
         <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100">
           <div className="max-w-[98%] mx-auto px-4 py-4">
             {/* 热门问题卡片 */}

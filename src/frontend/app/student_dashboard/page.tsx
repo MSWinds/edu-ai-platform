@@ -7,6 +7,7 @@ import DashboardSidebar from '../main_sidebar/DashboardSidebar';
 import { redirectIfNotAuthenticated, getUser } from '../login/auth';
 import { colors } from '../theme/colors';
 import { mockUserData } from '../mockdata/courseData';
+import PageHeader from '../components/PageHeader';
 
 export default function Dashboard() {
   const [userData, setUserData] = useState(mockUserData);
@@ -100,20 +101,27 @@ export default function Dashboard() {
       onCollapsedChange={(collapsed) => setSidebarCollapsed(collapsed)}
     >
       <div className="flex-1">
-        <header className="bg-white shadow" style={{ borderBottom: `1px solid ${colors.border}` }}>
+        <div className="bg-white shadow" style={{ borderBottom: `1px solid ${colors.border}` }}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <div className="flex justify-between items-center">
-              <h1 className="text-2xl font-bold" style={{ color: colors.text.primary }}>学生仪表盘</h1>
-              <div className="flex items-center space-x-4">
-                <span style={{ color: colors.text.secondary }}>欢迎回来，{userData.name}</span>
-                <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold"
-                  style={{ background: `linear-gradient(to right, ${colors.primary}, ${colors.secondary})` }}>
-                  {userData.name.charAt(0)}
+            <PageHeader
+              title="学生仪表盘"
+              icon={
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+              }
+              actions={
+                <div className="flex items-center space-x-4">
+                  <span style={{ color: colors.text.secondary }}>欢迎回来，{userData.name}</span>
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold"
+                    style={{ background: `linear-gradient(to right, ${colors.primary}, ${colors.secondary})` }}>
+                    {userData.name.charAt(0)}
+                  </div>
                 </div>
-              </div>
-            </div>
+              }
+            />
           </div>
-        </header>
+        </div>
         
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* 统计数据卡片 */}

@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { mockUserData } from '../mockdata/courseData';
 import DashboardSidebar from '../main_sidebar/DashboardSidebar';
 import { colors } from '../theme/colors';
+import PageHeader from '../components/PageHeader';
 
 // 假的AI生成题目（每周2-3题，结合mock数据）
 const generateFakeQuestions = (weeks: number[]) => {
@@ -149,21 +150,18 @@ const CustomAssignmentPage = () => {
       <DashboardSidebar />
       <div className="flex-1 flex flex-col overflow-hidden">
         <main className="flex-1 overflow-x-hidden overflow-y-auto" style={{ backgroundColor: colors.background }}>
-          <div className="container mx-auto px-6 py-8 max-w-5xl">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             {/* 页面标题 */}
-            <div className="mb-8">
-              <h1 className="text-2xl font-bold text-gray-900 flex items-center space-x-3">
-                <div className="h-8 w-8 rounded-lg flex items-center justify-center"
-                  style={{ background: colors.gradient.primary }}>
-                  <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
-                  </svg>
-                </div>
-                <span>智能测验</span>
-              </h1>
-              <p className="text-gray-600 mt-2">AI智能生成个性化测试题目，助您查漏补缺、巩固知识点</p>
-            </div>
+            <PageHeader
+              title="智能测验"
+              subtitle="AI智能生成个性化测试题目，助您查漏补缺、巩固知识点"
+              icon={
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
+                </svg>
+              }
+            />
 
             {/* AI智能测评说明区+未生成时的引导 */}
             {questions.length === 0 && (

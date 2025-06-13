@@ -4,6 +4,7 @@ import React from "react";
 import DashboardSidebar from "../main_sidebar/DashboardSidebar";
 import { colors } from "../theme/colors";
 import { mockUserData } from "../mockdata/courseData";
+import PageHeader from "../components/PageHeader";
 
 const TeacherClassManagement = () => {
   const course = mockUserData.course;
@@ -11,14 +12,21 @@ const TeacherClassManagement = () => {
     <div className="flex h-screen bg-gray-100">
       <DashboardSidebar userRole="teacher" />
       <div className="flex-1 flex flex-col overflow-hidden">
-        <header className="bg-white shadow" style={{ borderBottom: `1px solid ${colors.border}` }}>
+        <div className="bg-white shadow" style={{ borderBottom: `1px solid ${colors.border}` }}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <div className="flex justify-between items-center">
-              <h1 className="text-2xl font-bold" style={{ color: colors.text.primary }}>课程管理</h1>
-              <button className="px-4 py-2 rounded bg-blue-600 text-white font-medium hover:bg-blue-700 transition">新建课程</button>
-            </div>
+            <PageHeader
+              title="课程管理"
+              icon={
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg>
+              }
+              actions={
+                <button className="px-4 py-2 rounded bg-blue-600 text-white font-medium hover:bg-blue-700 transition">新建课程</button>
+              }
+            />
           </div>
-        </header>
+        </div>
         <main className="px-4 sm:px-6 lg:px-8 py-4">
           <div className="rounded-lg overflow-hidden shadow border mb-6" style={{ backgroundColor: colors.cardBg, border: `1px solid ${colors.border}`, width: 400, maxWidth: '100%' }}>
             <div className="h-40 flex items-center justify-center" style={{ background: `linear-gradient(to right, ${colors.primary}, ${colors.secondary})` }}>

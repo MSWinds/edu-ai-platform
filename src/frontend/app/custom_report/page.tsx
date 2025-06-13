@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import DashboardSidebar from '../main_sidebar/DashboardSidebar';
 import { colors } from '../theme/colors';
 import { CourseMenu } from '../class_page/course_1/components/CourseMenu';
+import PageHeader from '../components/PageHeader';
 
 // 假数据：只保留人工智能基础导论
 const courses = [
@@ -589,20 +590,17 @@ const CustomReportPage = () => {
       <DashboardSidebar />
       <div className="flex-1 flex flex-col overflow-hidden">
         <main className="flex-1 overflow-x-hidden overflow-y-auto" style={{ backgroundColor: colors.background }}>
-          <div className="container mx-auto px-6 py-8 max-w-7xl">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             {/* 页面标题 */}
-            <div className="mb-8">
-              <h1 className="text-3xl font-bold text-gray-900 flex items-center space-x-3">
-                <div className="h-10 w-10 rounded-xl flex items-center justify-center"
-                  style={{ background: colors.gradient.primary }}>
-                  <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                  </svg>
-                </div>
-                <span>智能学习跟踪系统</span>
-              </h1>
-              <p className="text-gray-600 mt-2 text-lg">数据驱动的个性化学习分析与进步跟踪</p>
-            </div>
+            <PageHeader
+              title="智能学习跟踪系统"
+              subtitle="数据驱动的个性化学习分析与进步跟踪"
+              icon={
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+              }
+            />
 
             {/* 选择器 */}
             <div className="bg-white rounded-xl shadow-sm border p-6 mb-8">

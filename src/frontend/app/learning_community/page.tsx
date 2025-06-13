@@ -5,6 +5,7 @@ import DashboardSidebar from '../main_sidebar/DashboardSidebar';
 import { colors } from '../theme/colors';
 import { mockCourseData } from '../mockdata/courseData';
 import { useRouter } from 'next/navigation';
+import PageHeader from '../components/PageHeader';
 import { 
   majorCategories, 
   majorPreferences, 
@@ -250,21 +251,28 @@ export default function LearningCommunity() {
   return (
     <DashboardSidebar>
       <div className="flex-1 bg-gray-50 min-h-screen">
-        <header className="bg-white border-b" style={{ borderColor: colors.border }}>
-          <div className="max-w-7xl mx-auto px-6 py-4">
-            <div className="flex items-center justify-between mb-4">
-              <h1 className="text-2xl font-bold" style={{ color: colors.text.primary }}>学习社区</h1>
-              <button
-                className="px-6 py-2 rounded-lg text-white font-medium shadow transition-colors"
-                style={{background: colors.gradient.primary}}
-                onClick={() => activeTab === 'discussion' ? setShowNewDiscussion(true) : setShowNewGroup(true)}
-              >
-                {activeTab === 'discussion' ? '发起讨论' : '创建小组'}
-              </button>
-            </div>
+        <div className="bg-white border-b" style={{ borderColor: colors.border }}>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <PageHeader
+              title="学习社区"
+              icon={
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+              }
+              actions={
+                <button
+                  className="px-6 py-2 rounded-lg text-white font-medium shadow transition-colors"
+                  style={{background: colors.gradient.primary}}
+                  onClick={() => activeTab === 'discussion' ? setShowNewDiscussion(true) : setShowNewGroup(true)}
+                >
+                  {activeTab === 'discussion' ? '发起讨论' : '创建小组'}
+                </button>
+              }
+                         />
             
             {/* Tab 切换 */}
-            <div className="flex space-x-1 bg-gray-100 rounded-lg p-1 w-fit">
+            <div className="flex space-x-1 bg-gray-100 rounded-lg p-1 w-fit mt-4">
               <button
                 className={`px-6 py-2 rounded-md font-medium text-sm transition-colors ${
                   activeTab === 'discussion'
@@ -287,7 +295,7 @@ export default function LearningCommunity() {
               </button>
             </div>
           </div>
-        </header>
+        </div>
 
         {/* 新建讨论弹窗 */}
         {showNewDiscussion && (
