@@ -89,7 +89,7 @@ export const mockUserData: UserData = {
     id: 1,
     title: '《人工智能基础导论：AI跨学科工具化思维、伦理设计与应用创想》',
     description: '全面介绍AI基础技术、工具与跨界应用',
-    totalWeeks: 12,
+    totalWeeks: 14,
     currentWeek: 7,
     overallProgress: 50,
     instructor: '李教授',
@@ -309,39 +309,8 @@ export const mockUserData: UserData = {
               }
             ],
             completed: false
-          },
-          // {
-          //   title: '主题6：提示迭代（Prompt Iteration）',
-          //   videoUrl: 'https://www.youtube.com/embed/cWaJurbtY30',
-          //   quiz: [
-          //     {
-          //       question: '提示迭代的目标是？',
-          //       options: [
-          //         { text: 'A. 优化提示', feedback: '正确，提示迭代的目标是优化提示。' },
-          //         { text: 'B. 增加样本', feedback: '不是哦，提示迭代的目标不是增加样本。' },
-          //         { text: 'C. 降低准确率', feedback: '不是哦，提示迭代的目标不是降低准确率。' }
-          //       ],
-          //       answer: 0
-          //     }
-          //   ],
-          //   completed: false
-          // },
-          // {
-          //   title: '主题7：总结与挑战活动',
-          //   videoUrl: 'https://www.youtube.com/embed/A-K3S-koHAA ',
-          //   quiz: [
-          //     {
-          //       question: '本周你最大的收获是？',
-          //       options: [
-          //         { text: 'A. 技术', feedback: '不错，技术是很重要的收获。' },
-          //         { text: 'B. 思维', feedback: '很棒，思维提升是本周的重点！' },
-          //         { text: 'C. 沟通', feedback: '沟通能力也很重要，继续加油！' }
-          //       ],
-          //       answer: 1
-          //     }
-          //   ],
-          //   completed: false
-          // }
+          }
+          
         ]
       },
       {
